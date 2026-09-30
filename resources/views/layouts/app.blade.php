@@ -514,6 +514,130 @@
             background-color: transparent !important;
         }
 
+        /* Sleek Action Buttons */
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px !important;
+            border: none !important;
+            text-decoration: none !important;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn-primary {
+            background-color: rgba(59, 130, 246, 0.12) !important;
+            color: #2563eb !important;
+        }
+        .action-btn-primary:hover {
+            background-color: #2563eb !important;
+            color: #ffffff !important;
+        }
+
+        .action-btn-warning {
+            background-color: rgba(245, 158, 11, 0.12) !important;
+            color: #d97706 !important;
+        }
+        .action-btn-warning:hover {
+            background-color: #d97706 !important;
+            color: #ffffff !important;
+        }
+
+        .action-btn-success {
+            background-color: rgba(16, 185, 129, 0.12) !important;
+            color: #059669 !important;
+        }
+        .action-btn-success:hover {
+            background-color: #059669 !important;
+            color: #ffffff !important;
+        }
+
+        .action-btn-danger {
+            background-color: rgba(239, 68, 68, 0.12) !important;
+            color: #dc2626 !important;
+        }
+        .action-btn-danger:hover {
+            background-color: #dc2626 !important;
+            color: #ffffff !important;
+        }
+
+        [data-bs-theme="dark"] .action-btn-primary {
+            background-color: rgba(96, 165, 250, 0.2) !important;
+            color: #60a5fa !important;
+        }
+        [data-bs-theme="dark"] .action-btn-primary:hover {
+            background-color: #3b82f6 !important;
+            color: #ffffff !important;
+        }
+
+        [data-bs-theme="dark"] .action-btn-warning {
+            background-color: rgba(251, 191, 36, 0.2) !important;
+            color: #fbbf24 !important;
+        }
+        [data-bs-theme="dark"] .action-btn-warning:hover {
+            background-color: #f59e0b !important;
+            color: #ffffff !important;
+        }
+
+        [data-bs-theme="dark"] .action-btn-success {
+            background-color: rgba(52, 211, 153, 0.2) !important;
+            color: #34d399 !important;
+        }
+        [data-bs-theme="dark"] .action-btn-success:hover {
+            background-color: #10b981 !important;
+            color: #ffffff !important;
+        }
+
+        [data-bs-theme="dark"] .action-btn-danger {
+            background-color: rgba(248, 113, 113, 0.2) !important;
+            color: #f87171 !important;
+        }
+        [data-bs-theme="dark"] .action-btn-danger:hover {
+            background-color: #ef4444 !important;
+            color: #ffffff !important;
+        }
+
+        .btn-subtle-info {
+            background-color: rgba(14, 165, 233, 0.12) !important;
+            color: #0284c7 !important;
+            border: none !important;
+        }
+        .btn-subtle-info:hover {
+            background-color: #0284c7 !important;
+            color: #ffffff !important;
+        }
+
+        .btn-subtle-success {
+            background-color: rgba(16, 185, 129, 0.12) !important;
+            color: #059669 !important;
+            border: none !important;
+        }
+        .btn-subtle-success:hover {
+            background-color: #059669 !important;
+            color: #ffffff !important;
+        }
+
+        [data-bs-theme="dark"] .btn-subtle-info {
+            background-color: rgba(56, 189, 248, 0.2) !important;
+            color: #38bdf8 !important;
+        }
+        [data-bs-theme="dark"] .btn-subtle-info:hover {
+            background-color: #0284c7 !important;
+            color: #ffffff !important;
+        }
+
+        [data-bs-theme="dark"] .btn-subtle-success {
+            background-color: rgba(52, 211, 153, 0.2) !important;
+            color: #34d399 !important;
+        }
+        [data-bs-theme="dark"] .btn-subtle-success:hover {
+            background-color: #10b981 !important;
+            color: #ffffff !important;
+        }
+
         /* Global Table Styling */
         .table {
             --bs-table-bg: transparent !important;

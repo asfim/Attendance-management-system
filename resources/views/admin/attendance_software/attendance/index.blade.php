@@ -81,21 +81,40 @@
                     @forelse($staffMembers as $staff)
                         @php
                             $att = $attendances->get($staff->id);
+                            $shift = $staff->shifts->first() ?? $staff->shift ?? \App\Models\Shift::first();
+                            $lateMins = $att?->late_minutes ?? 0;
+                            
+                            // Dynamic fallback late calculation if entry time is after shift start
+                            if (!$lateMins && $att?->entry_time && $shift?->start_time) {
+                                $shiftStart = \Carbon\Carbon::parse($date . ' ' . $shift->start_time);
+                                $userEntry = \Carbon\Carbon::parse($date . ' ' . $att->entry_time);
+                                if ($userEntry->gt($shiftStart)) {
+                                    $lateMins = (int) $userEntry->diffInMinutes($shiftStart);
+                                }
+                            }
                         @endphp
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center gap-2">
-                                    <img src="{{ $staff->photoUrl() }}" class="rounded-circle" width="34" height="34" style="object-fit: cover;">
+                                    <img src="{{ $staff->photoUrl() }}" class="rounded-circle shadow-sm" width="36" height="36" style="object-fit: cover;">
                                     <div>
                                         <div class="fw-bold text-dark">{{ $staff->user?->name }}</div>
                                         <span class="text-muted small">{{ $staff->employeeId() }}</span>
                                     </div>
                                 </div>
                             </td>
-                            <td>{{ $staff->departmentName }}</td>
+                            <td>
+                                <div class="fw-semibold text-dark">{{ $staff->departmentName }}</div>
+                                <span class="text-muted small"><i class="fa-regular fa-clock me-1"></i>Shift: {{ $shift?->name ?? 'General' }} ({{ $shift?->start_time ? date('h:i A', strtotime($shift->start_time)) : '09:00 AM' }})</span>
+                            </td>
                             <td>
                                 @if($att?->entry_time)
-                                    <span class="fw-bold text-dark">{{ date('h:i A', strtotime($att->entry_time)) }}</span>
+                                    <div class="fw-bold text-dark">{{ date('h:i A', strtotime($att->entry_time)) }}</div>
+                                    @if($lateMins > 0)
+                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger rounded-pill px-2 py-1 mt-1" style="font-size: 0.75rem;">
+                                            <i class="fa-solid fa-clock-rotate-left me-1"></i>Late by {{ $lateMins }} Min(s)
+                                        </span>
+                                    @endif
                                 @else
                                     <span class="text-muted">--:--</span>
                                 @endif
@@ -109,25 +128,34 @@
                             </td>
                             <td>
                                 @if($att)
-                                    <span class="badge {{ $att->badgeClass() }} px-3 py-1">{{ strtoupper($att->status) }}</span>
+                                    <span class="badge {{ $att->badgeClass() }} px-3 py-1 fw-bold" style="letter-spacing: 0.5px;">
+                                        {{ strtoupper($att->status) }}
+                                        @if(($att->status === 'late' || $lateMins > 0) && $lateMins > 0)
+                                            ({{ $lateMins }}m)
+                                        @endif
+                                    </span>
                                 @else
                                     <span class="badge bg-secondary px-3 py-1">NOT MARKED</span>
                                 @endif
                             </td>
                             <td>
-                                @if($att?->late_minutes > 0)
-                                    <span class="badge bg-warning text-dark me-1">Late: {{ $att->late_minutes }}m</span>
+                                @if($lateMins > 0)
+                                    <div class="mb-1">
+                                        <span class="badge bg-warning text-dark fw-bold px-3 py-1 shadow-sm"><i class="fa-solid fa-hourglass-half me-1"></i>Late: {{ $lateMins }} Minutes</span>
+                                    </div>
                                 @endif
                                 @if($att?->early_leave_minutes > 0)
-                                    <span class="badge bg-info text-dark">Early: {{ $att->early_leave_minutes }}m</span>
+                                    <div>
+                                        <span class="badge bg-info text-dark fw-bold px-3 py-1 shadow-sm"><i class="fa-solid fa-person-walking-arrow-right me-1"></i>Early: {{ $att->early_leave_minutes }} Minutes</span>
+                                    </div>
                                 @endif
-                                @if(!$att?->late_minutes && !$att?->early_leave_minutes)
-                                    <span class="text-muted">--</span>
+                                @if(!$lateMins && !$att?->early_leave_minutes)
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-1"><i class="fa-solid fa-circle-check me-1"></i>On Time</span>
                                 @endif
                             </td>
                             <td>
                                 @if($att?->overtime_minutes > 0)
-                                    <span class="badge bg-success">+{{ round($att->overtime_minutes / 60, 1) }} hrs</span>
+                                    <span class="badge bg-success px-3 py-1">+{{ round($att->overtime_minutes / 60, 1) }} hrs</span>
                                 @else
                                     <span class="text-muted">--</span>
                                 @endif

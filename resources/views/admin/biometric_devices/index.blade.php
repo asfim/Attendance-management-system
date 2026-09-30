@@ -120,20 +120,20 @@
                             </span>
                         </td>
                         <td class="pe-4 text-end">
-                            <div class="btn-group gap-1">
-                                <button type="button" class="btn btn-sm btn-outline-info rounded-pill px-3 btn-test-conn" data-device-id="{{ $device->id }}">
+                            <div class="d-flex align-items-center justify-content-end gap-1">
+                                <button type="button" class="btn btn-sm btn-subtle-info rounded-pill px-3 btn-test-conn" data-device-id="{{ $device->id }}" style="font-size: 0.8rem;">
                                     <i class="bi bi-lightning me-1"></i> Ping / Test
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 btn-sync-single" data-device-id="{{ $device->id }}">
+                                <button type="button" class="btn btn-sm btn-subtle-success rounded-pill px-3 btn-sync-single" data-device-id="{{ $device->id }}" style="font-size: 0.8rem;">
                                     <i class="bi bi-arrow-repeat me-1"></i> Sync Logs
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-primary rounded-circle" data-bs-toggle="modal" data-bs-target="#editDeviceModal{{ $device->id }}">
+                                <button type="button" class="action-btn action-btn-primary" data-bs-toggle="modal" data-bs-target="#editDeviceModal{{ $device->id }}" title="Edit Device">
                                     <i class="bi bi-pencil"></i>
                                 </button>
-                                <form action="{{ route('admin.biometric-devices.destroy', $device->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete device {{ $device->name }}?')">
+                                <form action="{{ route('admin.biometric-devices.destroy', $device->id) }}" method="POST" class="d-inline m-0 p-0" onsubmit="return confirm('Are you sure you want to delete device {{ $device->name }}?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle">
+                                    <button type="submit" class="action-btn action-btn-danger" title="Delete Device">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>

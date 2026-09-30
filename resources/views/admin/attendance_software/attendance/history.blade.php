@@ -78,9 +78,15 @@
                             <td class="fw-bold text-danger">{{ $log->exit_time ? date('h:i A', strtotime($log->exit_time)) : '--' }}</td>
                             <td><span class="badge {{ $log->badgeClass() }}">{{ strtoupper($log->status) }}</span></td>
                             <td>
-                                @if($log->late_minutes > 0) <span class="badge bg-warning text-dark me-1">Late {{ $log->late_minutes }}m</span> @endif
-                                @if($log->early_leave_minutes > 0) <span class="badge bg-info text-dark">Early {{ $log->early_leave_minutes }}m</span> @endif
-                                @if(!$log->late_minutes && !$log->early_leave_minutes) <span class="text-muted">--</span> @endif
+                                @if($log->late_minutes > 0)
+                                    <span class="badge bg-warning text-dark fw-bold px-2 py-1"><i class="fa-solid fa-clock me-1"></i>Late: {{ $log->late_minutes }} Minutes</span>
+                                @endif
+                                @if($log->early_leave_minutes > 0)
+                                    <span class="badge bg-info text-dark fw-bold px-2 py-1"><i class="fa-solid fa-person-walking-arrow-right me-1"></i>Early: {{ $log->early_leave_minutes }} Mins</span>
+                                @endif
+                                @if(!$log->late_minutes && !$log->early_leave_minutes)
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success px-2 py-1"><i class="fa-solid fa-check me-1"></i>On Time</span>
+                                @endif
                             </td>
                             <td>{{ $log->overtime_minutes > 0 ? round($log->overtime_minutes / 60, 1) . ' hrs' : '--' }}</td>
                             <td>{{ $log->working_hours > 0 ? $log->working_hours . ' hrs' : '--' }}</td>

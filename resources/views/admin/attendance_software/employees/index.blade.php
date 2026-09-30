@@ -101,13 +101,13 @@
                                 @endif
                             </td>
                             <td class="text-end">
-                                <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('admin.attendance-suite.employees.show', $emp->id) }}" class="btn btn-outline-primary" title="View Profile">
+                                <div class="d-flex align-items-center justify-content-end gap-1">
+                                    <a href="{{ route('admin.attendance-suite.employees.show', $emp->id) }}" class="action-btn action-btn-primary" title="View Profile">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
-                                    <form action="{{ route('admin.attendance-suite.employees.toggle-status', $emp->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('admin.attendance-suite.employees.toggle-status', $emp->id) }}" method="POST" class="d-inline m-0 p-0">
                                         @csrf
-                                        <button type="submit" class="btn btn-outline-{{ $emp->status === 'active' ? 'warning' : 'success' }}" title="Toggle Status">
+                                        <button type="submit" class="action-btn action-btn-{{ $emp->status === 'active' ? 'warning' : 'success' }}" title="Toggle Status ({{ $emp->status === 'active' ? 'Deactivate' : 'Activate' }})">
                                             <i class="fa-solid fa-power-off"></i>
                                         </button>
                                     </form>
