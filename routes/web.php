@@ -571,6 +571,7 @@ Route::middleware(['auth', 'log_activity'])->group(function () {
 
         Route::get('/holidays', [\App\Http\Controllers\Admin\AttendanceHolidayController::class, 'index'])->name('holidays.index');
         Route::post('/holidays', [\App\Http\Controllers\Admin\AttendanceHolidayController::class, 'store'])->name('holidays.store');
+        Route::post('/holidays/sync-bd', [\App\Http\Controllers\Admin\AttendanceHolidayController::class, 'syncBdHolidays'])->name('holidays.sync-bd');
         Route::delete('/holidays/{id}', [\App\Http\Controllers\Admin\AttendanceHolidayController::class, 'destroy'])->name('holidays.destroy');
 
         Route::get('/branches', [\App\Http\Controllers\Admin\BranchDepartmentController::class, 'index'])->name('branches.index');

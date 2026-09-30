@@ -8,8 +8,14 @@
             <h3 class="fw-bold mb-1 text-dark"><i class="fa-solid fa-calendar-day text-primary me-2"></i>Holiday & Festival Calendar</h3>
             <p class="text-muted small mb-0">Government Holidays, Company Holidays, Festival Holidays, Weekly Holidays & Custom Calendars</p>
         </div>
-        <div>
-            <button class="btn btn-primary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#addHolidayModal">
+        <div class="d-flex gap-2">
+            <form action="{{ route('admin.attendance-suite.holidays.sync-bd') }}" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-outline-success btn-sm rounded-pill px-3 fw-semibold">
+                    <i class="fa-solid fa-cloud-arrow-down me-1"></i> Auto Sync BD Holidays
+                </button>
+            </form>
+            <button class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold" data-bs-toggle="modal" data-bs-target="#addHolidayModal">
                 <i class="fa-solid fa-plus me-1"></i> Add Holiday
             </button>
         </div>
