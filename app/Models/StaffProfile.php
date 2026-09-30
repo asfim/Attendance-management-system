@@ -129,19 +129,28 @@ class StaffProfile extends Model
     /** Department Name Helper */
     public function getDepartmentNameAttribute(): string
     {
-        return $this->departmentRel?->name ?? ($this->department ?? 'General');
+        if ($this->relationLoaded('departmentRel') && $this->getRelation('departmentRel')) {
+            return $this->getRelation('departmentRel')->name;
+        }
+        return $this->department ?? 'General';
     }
 
     /** Designation Title Helper */
     public function getDesignationTitleAttribute(): string
     {
-        return $this->designationRel?->title ?? ($this->designation ?? 'Staff');
+        if ($this->relationLoaded('designationRel') && $this->getRelation('designationRel')) {
+            return $this->getRelation('designationRel')->title;
+        }
+        return $this->designation ?? 'Staff';
     }
 
     /** Branch Name Helper */
     public function getBranchNameAttribute(): string
     {
-        return $this->branch?->name ?? 'Main Branch';
+        if ($this->relationLoaded('branch') && $this->getRelation('branch')) {
+            return $this->getRelation('branch')->name;
+        }
+        return 'Main Branch';
     }
 
     /** Photo URL with fallback */

@@ -135,7 +135,14 @@ class AttendanceManagementController extends Controller
     // Missing Punches View
     public function missingPunches()
     {
-        $missingPunches = Attendance::with(['attendable.user', 'attendable.departmentRel', 'branch'])
+        $missingPunches = Attendance::with([
+            'attendable' => function ($morphTo) {
+                $morphTo->morphWith([
+                    StaffProfile::class => ['user', 'branch', 'departmentRel', 'designationRel'],
+                ]);
+            },
+            'branch'
+        ])
             ->where('attendable_type', StaffProfile::class)
             ->where(function($q) {
                 $q->where('is_missing_punch', true)
@@ -151,7 +158,15 @@ class AttendanceManagementController extends Controller
     // Attendance Correction Request / Adjustment Approval
     public function corrections()
     {
-        $corrections = Attendance::with(['attendable.user', 'attendable.departmentRel', 'corrector'])
+        $corrections = Attendance::with([
+            'attendable' => function ($morphTo) {
+                $morphTo->morphWith([
+                    StaffProfile::class => ['user', 'branch', 'departmentRel', 'designationRel'],
+                ]);
+            },
+            'branch',
+            'corrector'
+        ])
             ->where('attendable_type', StaffProfile::class)
             ->where(function($q) {
                 $q->where('is_corrected', true)
@@ -192,9 +207,18 @@ class AttendanceManagementController extends Controller
         $year  = $request->input('year', now()->year);
         $staffId = $request->input('staff_id');
 
-        $staffMembers = StaffProfile::with('user')->where('status', 'active')->get();
+        $staffMembers = StaffProfile::with(['user', 'branch', 'departmentRel'])->where('status', 'active')->get();
 
-        $query = Attendance::with(['attendable.user', 'attendable.departmentRel', 'branch'])
+        $query = Attendance::with([
+            'attendable' => function ($morphTo) {
+                $morphTo->morphWith([
+                    StaffProfile::class => ['user', 'branch', 'departmentRel', 'designationRel'],
+                ]);
+            },
+            'branch',
+            'department',
+            'shift'
+        ])
             ->where('attendable_type', StaffProfile::class)
             ->whereMonth('attendance_date', $month)
             ->whereYear('attendance_date', $year);

@@ -24,7 +24,14 @@ class AttendanceReportController extends Controller
         $departmentId = $request->input('department_id');
         $staffId      = $request->input('staff_id');
 
-        $query = Attendance::with(['attendable.user', 'attendable.departmentRel', 'branch'])
+        $query = Attendance::with([
+            'attendable' => function ($morphTo) {
+                $morphTo->morphWith([
+                    StaffProfile::class => ['user', 'branch', 'departmentRel', 'designationRel'],
+                ]);
+            },
+            'branch'
+        ])
             ->where('attendable_type', StaffProfile::class);
 
         if ($branchId) {

@@ -82,14 +82,33 @@
                         @php
                             $att = $attendances->get($staff->id);
                             $shift = $staff->shifts->first() ?? $staff->shift ?? \App\Models\Shift::first();
+                            
                             $lateMins = $att?->late_minutes ?? 0;
+                            $earlyMins = $att?->early_leave_minutes ?? 0;
                             
                             // Dynamic fallback late calculation if entry time is after shift start
-                            if (!$lateMins && $att?->entry_time && $shift?->start_time) {
+                            if ($att?->entry_time && $shift?->start_time) {
                                 $shiftStart = \Carbon\Carbon::parse($date . ' ' . $shift->start_time);
-                                $userEntry = \Carbon\Carbon::parse($date . ' ' . $att->entry_time);
+                                $userEntry  = \Carbon\Carbon::parse($date . ' ' . $att->entry_time);
                                 if ($userEntry->gt($shiftStart)) {
-                                    $lateMins = (int) $userEntry->diffInMinutes($shiftStart);
+                                    $diffLate = (int) $userEntry->diffInMinutes($shiftStart);
+                                    if ($diffLate > $lateMins) {
+                                        $lateMins = $diffLate;
+                                    }
+                                }
+                            } elseif ($att?->status === 'late' && !$lateMins) {
+                                $lateMins = 15;
+                            }
+
+                            // Dynamic fallback early leave calculation if exit time is before shift end
+                            if ($att?->exit_time && $shift?->end_time) {
+                                $shiftEnd = \Carbon\Carbon::parse($date . ' ' . $shift->end_time);
+                                $userExit = \Carbon\Carbon::parse($date . ' ' . $att->exit_time);
+                                if ($userExit->lt($shiftEnd)) {
+                                    $diffEarly = (int) $shiftEnd->diffInMinutes($userExit);
+                                    if ($diffEarly > $earlyMins) {
+                                        $earlyMins = $diffEarly;
+                                    }
                                 }
                             }
                         @endphp
@@ -141,16 +160,26 @@
                             <td>
                                 @if($lateMins > 0)
                                     <div class="mb-1">
-                                        <span class="badge bg-warning text-dark fw-bold px-3 py-1 shadow-sm"><i class="fa-solid fa-hourglass-half me-1"></i>Late: {{ $lateMins }} Minutes</span>
+                                        <span class="badge bg-warning text-dark fw-bold px-3 py-1 shadow-sm" style="font-size: 0.82rem;"><i class="fa-solid fa-hourglass-half me-1"></i>Late: {{ $lateMins }} Mins</span>
                                     </div>
                                 @endif
-                                @if($att?->early_leave_minutes > 0)
+                                @if($earlyMins > 0)
                                     <div>
-                                        <span class="badge bg-info text-dark fw-bold px-3 py-1 shadow-sm"><i class="fa-solid fa-person-walking-arrow-right me-1"></i>Early: {{ $att->early_leave_minutes }} Minutes</span>
+                                        <span class="badge bg-info text-dark fw-bold px-3 py-1 shadow-sm" style="font-size: 0.82rem;"><i class="fa-solid fa-person-walking-arrow-right me-1"></i>Early: {{ $earlyMins }} Mins</span>
                                     </div>
                                 @endif
-                                @if(!$lateMins && !$att?->early_leave_minutes)
-                                    <span class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-1"><i class="fa-solid fa-circle-check me-1"></i>On Time</span>
+                                @if(!$lateMins && !$earlyMins)
+                                    @if($att?->status === 'present')
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success rounded-pill px-3 py-1"><i class="fa-solid fa-circle-check me-1"></i>On Time</span>
+                                    @elseif($att?->status === 'absent')
+                                        <span class="text-danger small fw-bold"><i class="fa-solid fa-user-xmark me-1"></i>Absent</span>
+                                    @elseif($att?->status === 'leave')
+                                        <span class="text-primary small fw-bold"><i class="fa-solid fa-umbrella-beach me-1"></i>On Leave</span>
+                                    @elseif($att?->status === 'holiday')
+                                        <span class="text-secondary small fw-bold"><i class="fa-solid fa-calendar-day me-1"></i>Holiday</span>
+                                    @else
+                                        <span class="text-muted">--</span>
+                                    @endif
                                 @endif
                             </td>
                             <td>

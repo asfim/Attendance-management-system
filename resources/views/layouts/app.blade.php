@@ -638,6 +638,31 @@
             color: #ffffff !important;
         }
 
+        /* High Contrast Badge Rules for Yellow/Cyan Backgrounds */
+        .badge.bg-warning,
+        .badge.bg-warning *,
+        .badge.bg-warning.text-dark,
+        .bg-warning,
+        [data-bs-theme="dark"] .badge.bg-warning,
+        [data-bs-theme="dark"] .badge.bg-warning *,
+        [data-bs-theme="dark"] .badge.bg-warning.text-dark {
+            background-color: #fbbf24 !important;
+            color: #0f172a !important;
+            font-weight: 700 !important;
+        }
+
+        .badge.bg-info,
+        .badge.bg-info *,
+        .badge.bg-info.text-dark,
+        .bg-info,
+        [data-bs-theme="dark"] .badge.bg-info,
+        [data-bs-theme="dark"] .badge.bg-info *,
+        [data-bs-theme="dark"] .badge.bg-info.text-dark {
+            background-color: #38bdf8 !important;
+            color: #0f172a !important;
+            font-weight: 700 !important;
+        }
+
         /* Global Table Styling */
         .table {
             --bs-table-bg: transparent !important;
