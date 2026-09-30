@@ -79,12 +79,18 @@
                                             <span class="badge bg-warning text-dark rounded-pill px-3 py-1">PENDING</span>
                                         @endif
                                     </td>
-                                    <td class="text-end">
+                                    <td class="text-end text-nowrap">
                                         @if($app->status === 'pending')
-                                            <button class="btn btn-sm btn-success rounded-pill me-1" onclick="openApprovalModal({{ $app->id }}, 'approved')">Approve</button>
-                                            <button class="btn btn-sm btn-outline-danger rounded-pill" onclick="openApprovalModal({{ $app->id }}, 'rejected')">Reject</button>
+                                            <div class="d-inline-flex gap-2 justify-content-end align-items-center">
+                                                <button class="btn btn-sm btn-success rounded-pill px-3 py-1 d-inline-flex align-items-center gap-1 shadow-sm" onclick="openApprovalModal({{ $app->id }}, 'approved')">
+                                                    <i class="fa-solid fa-check"></i> Approve
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1 d-inline-flex align-items-center gap-1" onclick="openApprovalModal({{ $app->id }}, 'rejected')">
+                                                    <i class="fa-solid fa-xmark"></i> Reject
+                                                </button>
+                                            </div>
                                         @else
-                                            <span class="text-muted small"><i class="fa-solid fa-lock me-1"></i>Processed</span>
+                                            <span class="badge bg-secondary bg-opacity-10 text-muted px-3 py-1 border border-secondary border-opacity-25 rounded-pill"><i class="fa-solid fa-lock me-1"></i>Processed</span>
                                         @endif
                                     </td>
                                 </tr>
