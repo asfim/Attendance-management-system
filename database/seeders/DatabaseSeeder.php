@@ -294,5 +294,8 @@ class DatabaseSeeder extends Seeder
 
         // 10. Grade Rules
         $this->call(GradeRuleSeeder::class);
+
+        // 11. Fake Data for all menus
+        $this->call(DummyDataSeeder::class);
     }
 }

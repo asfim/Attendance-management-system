@@ -9,6 +9,7 @@ use App\Models\LeaveApplication;
 use App\Models\LeaveBalance;
 use App\Models\LeaveType;
 use App\Models\Shift;
+use App\Models\Holiday;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -76,6 +77,11 @@ class EmployeePortalController extends Controller
         $lateDeduction   = round(($lateDays / 3) * $dailyRate, 2);
         $netSalary     = max(0, $basicSalary + $overtimePay - $absentDeduction - $lateDeduction);
 
+        $upcomingHolidays = Holiday::where('date', '>=', $today)
+            ->orderBy('date', 'asc')
+            ->take(5)
+            ->get();
+
         return view('employee.dashboard', compact(
             'staff',
             'todayAttendance',
@@ -95,7 +101,8 @@ class EmployeePortalController extends Controller
             'lateDeduction',
             'netSalary',
             'month',
-            'year'
+            'year',
+            'upcomingHolidays'
         ));
     }
 
@@ -212,5 +219,92 @@ class EmployeePortalController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Leave application submitted successfully for review!');
+    }
+
+    public function attendance(Request $request)
+    {
+        $user = auth()->user();
+        $staff = StaffProfile::where('user_id', $user->id)->first() ?? StaffProfile::first();
+        
+        $month = (int) $request->input('month', now()->month);
+        $year  = (int) $request->input('year', now()->year);
+
+        $start = Carbon::create($year, $month, 1)->startOfMonth();
+        $end   = $start->copy()->endOfMonth();
+
+        $monthlyAttendances = Attendance::where('attendable_type', StaffProfile::class)
+            ->where('attendable_id', $staff->id)
+            ->whereBetween('attendance_date', [$start->toDateString(), $end->toDateString()])
+            ->orderBy('attendance_date', 'desc')
+            ->get();
+
+        $presentDays  = $monthlyAttendances->whereIn('status', ['present', 'work_from_home'])->count();
+        $lateDays     = $monthlyAttendances->where('status', 'late')->count();
+        $absentDays   = $monthlyAttendances->where('status', 'absent')->count();
+        $leaveDays    = $monthlyAttendances->where('status', 'leave')->count();
+
+        return view('employee.attendance', compact('staff', 'monthlyAttendances', 'month', 'year', 'presentDays', 'lateDays', 'absentDays', 'leaveDays'));
+    }
+
+    public function leaves(Request $request)
+    {
+        $user = auth()->user();
+        $staff = StaffProfile::with('currentLeaveBalance')->where('user_id', $user->id)->first() ?? StaffProfile::first();
+        
+        $year = now()->year;
+        $leaveBalance = LeaveBalance::firstOrCreate(
+            ['staff_profile_id' => $staff->id, 'year' => $year],
+            ['casual_leave_quota' => 10, 'sick_leave_quota' => 14, 'annual_leave_quota' => 15, 'emergency_leave_quota' => 5]
+        );
+
+        $leaveTypes = LeaveType::all();
+        $myLeaveApplications = LeaveApplication::with('leaveType')
+            ->where('applicant_type', StaffProfile::class)
+            ->where('applicant_id', $staff->id)
+            ->orderBy('id', 'desc')
+            ->paginate(15);
+
+        return view('employee.leaves', compact('staff', 'leaveBalance', 'leaveTypes', 'myLeaveApplications'));
+    }
+
+    public function holidays()
+    {
+        $holidays = Holiday::where('date', '>=', now()->startOfYear())
+            ->orderBy('date', 'asc')
+            ->get();
+            
+        return view('employee.holidays', compact('holidays'));
+    }
+
+    public function salary(Request $request)
+    {
+        $user = auth()->user();
+        $staff = StaffProfile::where('user_id', $user->id)->first() ?? StaffProfile::first();
+        
+        $month = (int) $request->input('month', now()->month);
+        $year  = (int) $request->input('year', now()->year);
+
+        $start = Carbon::create($year, $month, 1)->startOfMonth();
+        $end   = $start->copy()->endOfMonth();
+
+        $attendances = Attendance::where('attendable_type', StaffProfile::class)
+            ->where('attendable_id', $staff->id)
+            ->whereBetween('attendance_date', [$start->toDateString(), $end->toDateString()])
+            ->get();
+
+        $lateDays     = $attendances->where('status', 'late')->count();
+        $absentDays   = $attendances->where('status', 'absent')->count();
+        $overtimeMins = $attendances->sum('overtime_minutes');
+        $overtimeHours = round($overtimeMins / 60, 2);
+
+        $basicSalary   = (float) $staff->salary;
+        $dailyRate     = $basicSalary / 26;
+        $overtimeRate  = $staff->overtime_rate > 0 ? (float) $staff->overtime_rate : (($dailyRate / 8) * 1.5);
+        $overtimePay   = round($overtimeHours * $overtimeRate, 2);
+        $absentDeduction = round($absentDays * $dailyRate, 2);
+        $lateDeduction   = round(($lateDays / 3) * $dailyRate, 2);
+        $netSalary     = max(0, $basicSalary + $overtimePay - $absentDeduction - $lateDeduction);
+
+        return view('employee.salary', compact('staff', 'month', 'year', 'basicSalary', 'overtimePay', 'absentDeduction', 'lateDeduction', 'netSalary'));
     }
 }

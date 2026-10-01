@@ -549,6 +549,8 @@ Route::middleware(['auth', 'log_activity'])->group(function () {
         Route::get('/employees/create', [\App\Http\Controllers\Admin\EmployeeManagementController::class, 'create'])->name('employees.create');
         Route::post('/employees', [\App\Http\Controllers\Admin\EmployeeManagementController::class, 'store'])->name('employees.store');
         Route::get('/employees/{id}', [\App\Http\Controllers\Admin\EmployeeManagementController::class, 'show'])->name('employees.show');
+        Route::get('/employees/{id}/edit', [\App\Http\Controllers\Admin\EmployeeManagementController::class, 'edit'])->name('employees.edit');
+        Route::put('/employees/{id}', [\App\Http\Controllers\Admin\EmployeeManagementController::class, 'update'])->name('employees.update');
         Route::post('/employees/{id}/toggle-status', [\App\Http\Controllers\Admin\EmployeeManagementController::class, 'toggleStatus'])->name('employees.toggle-status');
 
         Route::get('/attendance', [\App\Http\Controllers\Admin\AttendanceManagementController::class, 'index'])->name('attendance.index');
@@ -592,9 +594,16 @@ Route::middleware(['auth', 'log_activity'])->group(function () {
     // Employee Panel Routes
     Route::prefix('employee')->name('employee.')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Employee\EmployeePortalController::class, 'dashboard'])->name('dashboard');
+        
+        Route::get('/attendance', [\App\Http\Controllers\Employee\EmployeePortalController::class, 'attendance'])->name('attendance');
         Route::post('/check-in', [\App\Http\Controllers\Employee\EmployeePortalController::class, 'checkIn'])->name('check-in');
         Route::post('/check-out', [\App\Http\Controllers\Employee\EmployeePortalController::class, 'checkOut'])->name('check-out');
+        
+        Route::get('/leaves', [\App\Http\Controllers\Employee\EmployeePortalController::class, 'leaves'])->name('leaves');
         Route::post('/submit-leave', [\App\Http\Controllers\Employee\EmployeePortalController::class, 'submitLeave'])->name('submit-leave');
+        
+        Route::get('/holidays', [\App\Http\Controllers\Employee\EmployeePortalController::class, 'holidays'])->name('holidays');
+        Route::get('/salary', [\App\Http\Controllers\Employee\EmployeePortalController::class, 'salary'])->name('salary');
     });
 });
 

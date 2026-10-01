@@ -105,6 +105,9 @@
                                     <a href="{{ route('admin.attendance-suite.employees.show', $emp->id) }}" class="action-btn action-btn-primary" title="View Profile">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
+                                    <a href="{{ route('admin.attendance-suite.employees.edit', $emp->id) }}" class="action-btn action-btn-info" title="Edit Profile">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
                                     <form action="{{ route('admin.attendance-suite.employees.toggle-status', $emp->id) }}" method="POST" class="d-inline m-0 p-0">
                                         @csrf
                                         <button type="submit" class="action-btn action-btn-{{ $emp->status === 'active' ? 'warning' : 'success' }}" title="Toggle Status ({{ $emp->status === 'active' ? 'Deactivate' : 'Activate' }})">

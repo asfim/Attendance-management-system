@@ -85,11 +85,13 @@ class EmployeeManagementController extends Controller
             'shift_id'       => 'nullable|exists:shifts,id',
         ]);
 
+        $staffRole = \App\Models\Role::where('name', 'staff')->first();
+
         $user = User::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role_id'  => 2, // Admin/Staff role
+            'role_id'  => $staffRole ? $staffRole->id : 2,
             'status'   => $request->input('status', 'active'),
         ]);
 
@@ -144,6 +146,77 @@ class EmployeeManagementController extends Controller
         }])->findOrFail($id);
 
         return view('admin.attendance_software.employees.show', compact('employee'));
+    }
+
+    public function edit($id)
+    {
+        $employee = StaffProfile::with(['user', 'shifts'])->findOrFail($id);
+        $branches = Branch::where('status', 'active')->get();
+        $departments = Department::where('status', 'active')->get();
+        $designations = Designation::where('status', 'active')->get();
+        $shifts = Shift::where('status', 'active')->get();
+
+        return view('admin.attendance_software.employees.edit', compact('employee', 'branches', 'departments', 'designations', 'shifts'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $employee = StaffProfile::with('user')->findOrFail($id);
+
+        $request->validate([
+            'name'           => 'required|string|max:255',
+            'email'          => 'required|email|unique:users,email,' . $employee->user_id,
+            'password'       => 'nullable|string|min:6',
+            'phone'          => 'required|string|max:20',
+            'branch_id'      => 'nullable|exists:branches,id',
+            'department_id'  => 'nullable|exists:departments,id',
+            'designation_id' => 'nullable|exists:designations,id',
+            'joining_date'   => 'required|date',
+            'biometric_id'   => 'nullable|string|max:50',
+            'fingerprint_id' => 'nullable|string|max:50',
+            'face_id'        => 'nullable|string|max:50',
+            'salary'         => 'required|numeric|min:0',
+            'overtime_rate'  => 'nullable|numeric|min:0',
+            'photo'          => 'nullable|image|max:2048',
+            'shift_id'       => 'nullable|exists:shifts,id',
+        ]);
+
+        $user = clone $employee->user;
+        $user->name = $request->name;
+        $user->email = $request->email;
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+        $user->status = $request->input('status', 'active');
+        $user->save();
+
+        if ($request->hasFile('photo')) {
+            if ($employee->photo) {
+                Storage::disk('public')->delete($employee->photo);
+            }
+            $employee->photo = $request->file('photo')->store('staff_photos', 'public');
+        }
+
+        $employee->branch_id = $request->branch_id;
+        $employee->department_id = $request->department_id;
+        $employee->designation_id = $request->designation_id;
+        $employee->biometric_id = $request->biometric_id;
+        $employee->fingerprint_id = $request->fingerprint_id;
+        $employee->face_id = $request->face_id;
+        $employee->phone = $request->phone;
+        $employee->joining_date = $request->joining_date;
+        $employee->salary = $request->salary;
+        $employee->overtime_rate = $request->overtime_rate ?? 0;
+        $employee->status = $request->input('status', 'active');
+        $employee->save();
+
+        if ($request->shift_id) {
+            $employee->shifts()->sync([$request->shift_id]);
+        } else {
+            $employee->shifts()->detach();
+        }
+
+        return redirect()->route('admin.attendance-suite.employees.index')->with('success', 'Employee updated successfully!');
     }
 
     public function toggleStatus($id)

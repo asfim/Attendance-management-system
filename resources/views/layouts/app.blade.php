@@ -733,10 +733,11 @@
 
         <div class="overflow-y-auto flex-grow-1 py-3" id="sidebarMenu">
 
-            <div class="px-3 mb-2 text-muted"
-                style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">
-                Main Menu
-            </div>
+            @if (auth()->user()->hasRole(['super_admin', 'admin']))
+                <div class="px-3 mb-2 text-muted"
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">
+                    Main Menu
+                </div>
 
             <!-- Dashboard -->
             <a href="{{ route('admin.attendance-suite.dashboard') }}"
@@ -867,6 +868,7 @@
                     </li>
                 </ul>
             </div>
+            @endif
 
             <!-- System Administration -->
             <div class="mt-3 mb-2 px-3 text-muted"
@@ -874,10 +876,43 @@
                 Portals & System
             </div>
 
-            <a href="{{ route('employee.dashboard') }}"
-                class="nav-link-custom {{ request()->routeIs('employee.dashboard') ? 'active' : '' }}">
-                <i class="fa-solid fa-mobile-screen text-primary"></i>Employee Portal
-            </a>
+            <!-- Employee Portal Menu -->
+            @if (auth()->user()->hasRole(['employee', 'staff', 'teacher', 'hr', 'accountant', 'receptionist']))
+                <div class="px-3 mb-2 text-muted"
+                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">
+                    My Portal
+                </div>
+                
+                <a href="{{ route('employee.dashboard') }}"
+                    class="nav-link-custom {{ request()->routeIs('employee.dashboard') ? 'active' : '' }}">
+                    <i class="fa-solid fa-gauge text-primary"></i>Dashboard
+                </a>
+                
+                <a href="{{ route('employee.attendance') }}"
+                    class="nav-link-custom {{ request()->routeIs('employee.attendance') ? 'active' : '' }}">
+                    <i class="fa-solid fa-user-clock text-success"></i>My Attendance
+                </a>
+                
+                <a href="{{ route('employee.leaves') }}"
+                    class="nav-link-custom {{ request()->routeIs('employee.leaves') ? 'active' : '' }}">
+                    <i class="fa-solid fa-umbrella-beach text-teal"></i>My Leaves
+                </a>
+                
+                <a href="{{ route('employee.holidays') }}"
+                    class="nav-link-custom {{ request()->routeIs('employee.holidays') ? 'active' : '' }}">
+                    <i class="fa-solid fa-calendar-day text-danger"></i>Holidays
+                </a>
+                
+                <a href="{{ route('employee.salary') }}"
+                    class="nav-link-custom {{ request()->routeIs('employee.salary') ? 'active' : '' }}">
+                    <i class="fa-solid fa-wallet text-info"></i>Salary & Payslips
+                </a>
+            @else
+                <a href="{{ route('employee.dashboard') }}"
+                    class="nav-link-custom {{ request()->routeIs('employee.dashboard') ? 'active' : '' }}">
+                    <i class="fa-solid fa-mobile-screen text-primary"></i>Employee Portal
+                </a>
+            @endif
 
             @if (auth()->user()->isSuperAdmin() || auth()->user()->hasRole('admin'))
                 <a href="{{ route('admin.roles.index') }}"
