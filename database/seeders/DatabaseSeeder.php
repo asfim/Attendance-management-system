@@ -14,9 +14,6 @@ use App\Models\StaffProfile;
 use App\Models\StudentProfile;
 use App\Models\ParentProfile;
 use App\Models\Timetable;
-use App\Models\FeeCategory;
-use App\Models\FeeStructure;
-use App\Models\Book;
 use App\Models\Notice;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -198,6 +195,80 @@ class DatabaseSeeder extends Seeder
             'status' => 'active',
         ]);
 
+        // Generate Fake Data
+        $faker = \Faker\Factory::create();
+
+        // 10 Fake Teachers
+        for ($i = 0; $i < 10; $i++) {
+            $tUser = User::create([
+                'role_id' => $roleModels['teacher']->id,
+                'name' => $faker->name,
+                'email' => $faker->unique()->safeEmail,
+                'password' => Hash::make('password'),
+                'status' => 'active',
+            ]);
+
+            StaffProfile::create([
+                'user_id' => $tUser->id,
+                'phone' => substr($faker->phoneNumber, 0, 15),
+                'address' => $faker->address,
+                'qualifications' => 'BSc/MSc',
+                'designation' => 'Teacher',
+                'joining_date' => $faker->date(),
+                'salary' => $faker->randomFloat(2, 30000, 60000),
+                'status' => 'active',
+            ]);
+        }
+
+        // 20 Fake Students
+        for ($i = 0; $i < 20; $i++) {
+            $sUser = User::create([
+                'role_id' => $roleModels['student']->id,
+                'name' => $faker->name,
+                'email' => $faker->unique()->safeEmail,
+                'password' => Hash::make('password'),
+                'status' => 'active',
+            ]);
+
+            $pUser = User::create([
+                'role_id' => $roleModels['parent']->id,
+                'name' => $faker->name,
+                'email' => $faker->unique()->safeEmail,
+                'password' => Hash::make('password'),
+                'status' => 'active',
+            ]);
+
+            $pProfile = ParentProfile::create([
+                'user_id' => $pUser->id,
+                'phone' => substr($faker->phoneNumber, 0, 15),
+                'occupation' => substr($faker->jobTitle, 0, 50),
+                'address' => $faker->address,
+            ]);
+
+            $admNo = 'ADM-2026' . str_pad($i + 100, 3, '0', STR_PAD_LEFT);
+            $studentQr = json_encode([
+                'admission_no' => $admNo,
+                'name' => $sUser->name,
+                'class' => $class6->id,
+            ]);
+
+            StudentProfile::create([
+                'user_id' => $sUser->id,
+                'parent_id' => $pProfile->id,
+                'roll_no' => (string)($i + 2),
+                'session_id' => $session->id,
+                'class_id' => $class6->id,
+                'section_id' => $secA->id,
+                'admission_no' => $admNo,
+                'admission_date' => $faker->date(),
+                'dob' => $faker->date('Y-m-d', '2015-01-01'),
+                'gender' => $faker->randomElement(['Male', 'Female']),
+                'blood_group' => $faker->randomElement(['A+', 'B+', 'O+', 'AB+']),
+                'qr_code' => $studentQr,
+                'status' => 'active',
+            ]);
+        }
+
         // 6. Timetable Setup
         Timetable::create([
             'session_id' => $session->id,
@@ -211,24 +282,7 @@ class DatabaseSeeder extends Seeder
             'end_time' => '10:00:00',
         ]);
 
-        // 7. Fees Setup
-        $feeCat = FeeCategory::create(['name' => 'Tuition Fee']);
-        FeeStructure::create([
-            'fee_category_id' => $feeCat->id,
-            'class_id' => $class6->id,
-            'amount' => 1500.00,
-        ]);
 
-        // 8. Library Books
-        Book::create([
-            'title' => 'Introduction to Algebra',
-            'author' => 'G. Chrystal',
-            'isbn' => '978-0-123456-78-9',
-            'publisher' => 'Academic Press',
-            'rack_no' => 'Rack A1',
-            'quantity' => 10,
-            'available_qty' => 10,
-        ]);
 
         // 9. Notices
         Notice::create([

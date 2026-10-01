@@ -11,12 +11,7 @@ return new class extends Migration
         $tables = [
             'users',
             'classes',
-            'academic_sessions',
-            'invoices',
-            'books',
-            'hostels',
-            'transport_routes',
-            'inventory_items'
+            'academic_sessions'
         ];
 
         foreach ($tables as $t) {
@@ -31,12 +26,7 @@ return new class extends Migration
         $tables = [
             'users',
             'classes',
-            'academic_sessions',
-            'invoices',
-            'books',
-            'hostels',
-            'transport_routes',
-            'inventory_items'
+            'academic_sessions'
         ];
 
         foreach ($tables as $t) {
