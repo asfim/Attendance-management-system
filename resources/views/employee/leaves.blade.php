@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container-fluid px-4 py-3">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3 page-header-row">
         <div>
             <h3 class="fw-bold mb-1"><i class="fa-solid fa-umbrella-beach text-teal me-2"></i>My Leaves</h3>
             <p class="text-muted small mb-0">Manage your leaves and view balances</p>

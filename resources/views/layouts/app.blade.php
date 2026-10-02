@@ -199,6 +199,7 @@
 
         /* ==================== ADMIN RESPONSIVE STYLES ==================== */
 
+        /* ---- Tablet & below (992px) ---- */
         @media (max-width: 992px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -207,6 +208,7 @@
             .sidebar.active {
                 transform: translateX(0);
                 box-shadow: 5px 0 25px rgba(0,0,0,0.2);
+                z-index: 1050;
             }
 
             .main-content {
@@ -217,44 +219,58 @@
                 left: 0;
             }
 
+            /* Sidebar backdrop overlay */
             .sidebar-overlay {
                 display: none;
                 position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0,0,0,0.4);
-                z-index: 999;
+                inset: 0;
+                background: rgba(0,0,0,0.45);
+                z-index: 1040;
+                backdrop-filter: blur(2px);
             }
 
-            .sidebar.active ~ .sidebar-overlay {
+            .sidebar-overlay.active {
                 display: block;
             }
 
-            .table-responsive,
-            .card-body {
+            .table-responsive {
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
             }
         }
 
+        /* ---- Mobile landscape / large phones (768px) ---- */
         @media (max-width: 767px) {
-            html {
-                font-size: 13px;
-            }
+            html { font-size: 13px; }
 
-            .main-content {
-                padding-top: 60px;
-            }
+            .main-content { padding-top: 60px; }
 
             .navbar-custom {
                 height: 60px;
-                padding: 0 12px;
+                padding: 0 10px;
             }
 
-            .navbar-custom .container-fluid {
-                padding: 0 8px;
+            /* Hide icon-only navbar buttons' text labels */
+            .navbar-custom .btn-text-label { display: none !important; }
+
+            /* Reduce icon btn size */
+            .navbar-custom .btn.rounded-circle {
+                width: 36px;
+                height: 36px;
+                padding: 0;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Hide clear-cache & holiday icon on very small screens */
+            .navbar-icon-optional { display: none !important; }
+
+            /* Page header: stack title & actions */
+            .page-header-row {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 10px !important;
             }
 
             .card,
@@ -264,17 +280,20 @@
                 margin-bottom: 12px;
             }
 
-            .card-body {
-                padding: 14px !important;
+            .card-body { padding: 12px !important; }
+            .card-header { padding: 10px 12px !important; }
+
+            /* Page-level container padding */
+            .container-fluid.px-4 {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
             }
 
-            .card-header {
-                padding: 12px 14px !important;
-            }
-
+            /* Tables */
             .table thead th {
                 padding: 8px 10px !important;
                 font-size: 0.68rem !important;
+                white-space: nowrap !important;
             }
 
             .table tbody td {
@@ -282,10 +301,18 @@
                 font-size: 0.8rem;
             }
 
-            .info-card {
-                margin-bottom: 10px;
+            /* Filters: stack vertically on mobile */
+            .filter-bar-form {
+                flex-direction: column !important;
+                gap: 8px !important;
             }
 
+            .filter-bar-form .form-select,
+            .filter-bar-form .form-control {
+                width: 100% !important;
+            }
+
+            /* Forms */
             .form-control,
             .form-select {
                 font-size: 0.85rem;
@@ -297,6 +324,7 @@
                 margin-bottom: 4px;
             }
 
+            /* Buttons */
             .btn {
                 font-size: 0.82rem;
                 padding: 7px 14px;
@@ -307,16 +335,17 @@
                 padding: 5px 10px;
             }
 
-            h5.fw-bold,
-            h4.fw-bold {
-                font-size: 1.1rem;
-            }
+            /* Headings */
+            h5.fw-bold, h4.fw-bold { font-size: 1.05rem; }
+            h3.fw-bold { font-size: 1.25rem; }
 
+            /* Badges */
             .badge {
                 font-size: 0.7rem;
                 padding: 4px 8px;
             }
 
+            /* Pagination */
             .pagination {
                 flex-wrap: wrap;
                 justify-content: center;
@@ -326,50 +355,80 @@
                 padding: 6px 10px;
                 font-size: 0.78rem;
             }
+
+            /* Stat counter cards: 2 per row already (col-6), reduce padding */
+            .info-card, .card.rounded-4.p-3 {
+                padding: 12px !important;
+            }
+
+            /* Dashboard chart containers */
+            canvas { max-height: 220px !important; }
+
+            /* Action button group wraps on mobile */
+            .d-flex.gap-1.justify-content-end { flex-wrap: wrap; }
         }
 
+        /* ---- Small phones (576px) ---- */
         @media (max-width: 575px) {
-            html {
-                font-size: 12.5px;
-            }
+            html { font-size: 12.5px; }
 
-            .sidebar {
-                width: 240px;
-            }
+            .sidebar { width: 240px; }
 
-            .navbar-custom {
-                height: 55px;
-            }
+            .navbar-custom { height: 55px; }
 
             .main-content {
                 padding-top: 55px;
-                padding-left: 8px;
-                padding-right: 8px;
             }
 
-            .card-body {
-                padding: 10px !important;
+            /* Full-width container on smallest screens */
+            .container-fluid.px-4 {
+                padding-left: 8px !important;
+                padding-right: 8px !important;
             }
 
-            .d-flex.gap-2 {
-                flex-wrap: wrap;
-            }
+            .card-body { padding: 10px !important; }
 
             .table thead th {
-                white-space: normal !important;
                 font-size: 0.65rem !important;
                 padding: 6px 8px !important;
             }
 
             .table tbody td {
-                font-size: 0.78rem;
+                font-size: 0.77rem;
                 padding: 6px 8px !important;
             }
 
+            /* Modals full-width */
             .modal-dialog {
-                margin: 10px;
-                max-width: calc(100% - 20px);
+                margin: 8px;
+                max-width: calc(100% - 16px);
             }
+
+            /* Payroll header filters wrap */
+            .payroll-filters { flex-wrap: wrap; gap: 6px; }
+            .payroll-filters .form-select { min-width: 120px; }
+
+            /* Employee monthly stat boxes: 2 col */
+            .emp-stat-col { width: 50% !important; }
+
+            /* Hide some less-critical table columns on tiny screens */
+            .table-hide-xs { display: none !important; }
+
+            /* Flex containers wrap */
+            .d-flex.gap-2:not(.no-wrap) { flex-wrap: wrap; }
+
+            /* Profile circle in navbar: smaller */
+            .navbar-profile-circle {
+                width: 30px !important;
+                height: 30px !important;
+                font-size: 0.8rem !important;
+            }
+        }
+
+        /* ==================== PRINT FRIENDLY ==================== */
+        @media print {
+            .sidebar, .navbar-custom, .btn, .action-btn, .pagination { display: none !important; }
+            .main-content { margin-left: 0 !important; padding-top: 0 !important; }
         }
 
         /* Custom overrides for Accordion and Flash messages */
@@ -724,9 +783,12 @@
 
 <body>
 
+    <!-- Sidebar Overlay (click to close) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
     <!-- Sidebar -->
     <div class="sidebar d-flex flex-column" id="sidebar">
-        <div class="p-4 border-bottom border-light border-opacity-10 d-flex align-items-center justify-content-between">
+        <div class="p-3 border-bottom border-light border-opacity-10 d-flex align-items-center justify-content-between">
             <span class="fs-5 fw-bold text-primary"><i class="fa-solid fa-clock me-2"></i>Attendance Suite</span>
             <button class="btn btn-sm d-lg-none" onclick="toggleSidebar()"><i class="fa-solid fa-times"></i></button>
         </div>
@@ -947,24 +1009,24 @@
     <!-- Main Section -->
     <div class="main-content">
         <!-- Top Navbar -->
-        <nav class="navbar navbar-custom d-flex align-items-center justify-content-between px-4">
+        <nav class="navbar navbar-custom d-flex align-items-center justify-content-between px-3 px-md-4">
             <div class="d-flex align-items-center">
-                <button class="btn btn-light d-lg-none me-3" onclick="toggleSidebar()"><i
+                <button class="btn btn-light d-lg-none me-2" onclick="toggleSidebar()"><i
                         class="fa-solid fa-bars"></i></button>
-                <h5 class="m-0 fw-semibold">{{ $header ?? 'Dashboard' }}</h5>
+                <h5 class="m-0 fw-semibold text-truncate" style="max-width: 180px;" class="d-none d-sm-block">{{ $header ?? 'Dashboard' }}</h5>
             </div>
 
             <div class="d-flex align-items-center">
 
                 @if (auth()->user()->hasRole(['super_admin', 'admin']))
-                    <!-- Holidays -->
-                    <a href="{{ route('admin.holidays.index') }}" class="btn btn-light rounded-circle me-3"
+                    <!-- Holidays (hidden on small mobile) -->
+                    <a href="{{ route('admin.holidays.index') }}" class="btn btn-light rounded-circle me-2 navbar-icon-optional"
                         title="Holidays">
                         <i class="fa-solid fa-umbrella-beach text-secondary"></i>
                     </a>
 
-                    <!-- Clear Cache -->
-                    <form action="{{ route('admin.clear.cache') }}" method="POST" class="m-0 p-0 me-3">
+                    <!-- Clear Cache (hidden on small mobile) -->
+                    <form action="{{ route('admin.clear.cache') }}" method="POST" class="m-0 p-0 me-2 navbar-icon-optional">
                         @csrf
                         <button type="submit" class="btn btn-light rounded-circle" title="Clear Cache">
                             <i class="fa-solid fa-broom text-secondary"></i>
@@ -973,7 +1035,7 @@
                 @endif
 
                 <!-- Calculator -->
-                <div class="dropdown me-3">
+                <div class="dropdown me-2">
                     <button class="btn btn-light rounded-circle" type="button" data-bs-toggle="dropdown"
                         aria-expanded="false" data-bs-auto-close="outside" title="Calculator">
                         <i class="fa-solid fa-calculator text-secondary"></i>
@@ -1038,7 +1100,7 @@
                 </div>
 
                 <!-- Theme toggle -->
-                <button class="btn btn-light rounded-circle me-3" id="themeToggleBtn" onclick="toggleTheme()">
+                <button class="btn btn-light rounded-circle me-2" id="themeToggleBtn" onclick="toggleTheme()">
                     <i class="fa-solid fa-moon text-secondary"></i>
                 </button>
 
@@ -1046,8 +1108,8 @@
                 <div class="dropdown">
                     <button class="btn btn-light d-flex align-items-center gap-2 border-0 bg-transparent"
                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
-                            style="width: 36px; height: 36px;">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center navbar-profile-circle"
+                            style="width: 36px; height: 36px; font-size: 0.9rem;">
                             {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                         </div>
                         <span class="d-none d-md-inline fw-semibold text-secondary">{{ auth()->user()->name }}</span>
@@ -1106,7 +1168,15 @@
 
     <script>
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        function closeSidebar() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('sidebarOverlay').classList.remove('active');
         }
 
         // Initialize Theme from localStorage

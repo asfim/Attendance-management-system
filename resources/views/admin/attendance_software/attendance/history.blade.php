@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container-fluid px-4 py-3">
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3 page-header-row">
         <div>
             <h3 class="fw-bold mb-1 text-dark"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>Attendance Log History</h3>
             <p class="text-muted small mb-0">Search historical attendance records by Month, Year, and Staff member</p>
@@ -56,13 +56,13 @@
                     <tr>
                         <th>Date</th>
                         <th>Employee Name</th>
-                        <th>Branch / Dept</th>
+                        <th class="table-hide-xs">Branch / Dept</th>
                         <th>Check-In</th>
                         <th>Check-Out</th>
                         <th>Status</th>
-                        <th>Late / Early</th>
-                        <th>Overtime</th>
-                        <th>Working Hours</th>
+                        <th class="table-hide-xs">Late / Early</th>
+                        <th class="table-hide-xs">Overtime</th>
+                        <th class="table-hide-xs">Working Hours</th>
                     </tr>
                 </thead>
                 <tbody>

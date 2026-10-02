@@ -3,14 +3,14 @@
 @section('content')
 <div class="container-fluid px-4 py-3">
     <!-- Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-start mb-4 gap-3 page-header-row">
         <div>
             <h3 class="fw-bold mb-1 text-dark"><i class="fa-solid fa-bell text-primary me-2"></i>Automated Notifications Hub</h3>
             <p class="text-muted small mb-0">SMS, Email, & WhatsApp Notifications for Late Arrivals, Absentees, Leave Approvals & Corrections</p>
         </div>
         <div>
             <button class="btn btn-primary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#sendNotifModal">
-                <i class="fa-solid fa-paper-plane me-1"></i> Send Manual Notification
+                <i class="fa-solid fa-paper-plane me-1"></i> <span class="d-none d-sm-inline">Send Manual Notification</span><span class="d-sm-none">Send</span>
             </button>
         </div>
     </div>

@@ -2,19 +2,19 @@
 
 @section('content')
 <div class="container-fluid px-4 py-3">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-start mb-4 gap-3 page-header-row">
         <div>
             <h3 class="fw-bold mb-1"><i class="fa-solid fa-user-clock text-success me-2"></i>My Attendance</h3>
             <p class="text-muted small mb-0">View your daily attendance and monthly summaries</p>
         </div>
         
-        <form action="{{ route('employee.attendance') }}" method="GET" class="d-flex gap-2">
-            <select name="month" class="form-select rounded-pill" onchange="this.form.submit()">
+        <form action="{{ route('employee.attendance') }}" method="GET" class="d-flex flex-wrap gap-2">
+            <select name="month" class="form-select form-select-sm rounded-pill" onchange="this.form.submit()">
                 @for($m=1; $m<=12; $m++)
                     <option value="{{ $m }}" {{ $month == $m ? 'selected' : '' }}>{{ date('F', mktime(0,0,0,$m,1)) }}</option>
                 @endfor
             </select>
-            <select name="year" class="form-select rounded-pill" onchange="this.form.submit()">
+            <select name="year" class="form-select form-select-sm rounded-pill" onchange="this.form.submit()">
                 @for($y=date('Y'); $y>=date('Y')-2; $y--)
                     <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>{{ $y }}</option>
                 @endfor

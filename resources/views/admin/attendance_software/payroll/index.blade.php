@@ -3,13 +3,13 @@
 @section('content')
 <div class="container-fluid px-4 py-3">
     <!-- Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-start mb-4 gap-3 page-header-row">
         <div>
             <h3 class="fw-bold mb-1 text-dark"><i class="fa-solid fa-money-check-dollar text-primary me-2"></i>Attendance-Based Salary & Payroll Sheet</h3>
             <p class="text-muted small mb-0">Monthly Salary Calculation based on Present, Late Deductions, Absent Deductions, & Overtime Pay</p>
         </div>
-        <div class="d-flex gap-2">
-            <form action="{{ route('admin.attendance-suite.payroll.index') }}" method="GET" class="d-flex gap-2">
+        <div>
+            <form action="{{ route('admin.attendance-suite.payroll.index') }}" method="GET" class="d-flex flex-wrap gap-2 payroll-filters">
                 <select name="month" class="form-select form-select-sm rounded-pill" onchange="this.form.submit()">
                     @for($m=1; $m<=12; $m++)
                         <option value="{{ $m }}" {{ $month == $m ? 'selected' : '' }}>{{ date('F', mktime(0,0,0,$m,1)) }}</option>
@@ -37,12 +37,12 @@
                 <thead class="table-light">
                     <tr>
                         <th>Staff Name</th>
-                        <th>Earnings (Basic + Allowances)</th>
-                        <th>Attendance (P/L/A/Lve)</th>
-                        <th>Overtime (Hrs/Pay)</th>
-                        <th>Deductions (Late/Absent/Adv)</th>
+                        <th class="table-hide-xs">Earnings (Basic + Allowances)</th>
+                        <th>Attendance</th>
+                        <th class="table-hide-xs">Overtime</th>
+                        <th class="table-hide-xs">Deductions</th>
                         <th>Net Payable</th>
-                        <th class="text-end">Payslip Action</th>
+                        <th class="text-end">Actions</th>
                     </tr>
                 </thead>
                 <tbody>

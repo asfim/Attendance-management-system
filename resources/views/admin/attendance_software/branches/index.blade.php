@@ -3,20 +3,20 @@
 @section('content')
 <div class="container-fluid px-4 py-3">
     <!-- Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-start mb-4 gap-3 page-header-row">
         <div>
             <h3 class="fw-bold mb-1 text-dark"><i class="fa-solid fa-code-branch text-primary me-2"></i>Branch & Department Management</h3>
             <p class="text-muted small mb-0">Multi-Branch support, Department hierarchy, Designations, & Employee Transfer logs</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2">
             <button class="btn btn-primary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#addBranchModal">
-                <i class="fa-solid fa-plus me-1"></i> Add Branch
+                <i class="fa-solid fa-plus me-1"></i> Branch
             </button>
             <button class="btn btn-outline-primary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#addDeptModal">
-                <i class="fa-solid fa-plus me-1"></i> Add Department
+                <i class="fa-solid fa-plus me-1"></i> Dept
             </button>
             <button class="btn btn-outline-secondary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#transferModal">
-                <i class="fa-solid fa-arrow-right-arrow-left me-1"></i> Employee Transfer
+                <i class="fa-solid fa-arrow-right-arrow-left me-1"></i> <span class="d-none d-sm-inline">Employee Transfer</span><span class="d-sm-none">Transfer</span>
             </button>
         </div>
     </div>

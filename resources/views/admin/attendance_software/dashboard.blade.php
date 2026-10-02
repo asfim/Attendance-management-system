@@ -3,13 +3,13 @@
 @section('content')
 <div class="container-fluid px-4 py-3">
     <!-- Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-start mb-4 gap-3 page-header-row">
         <div>
             <h3 class="fw-bold mb-1 text-dark"><i class="fa-solid fa-clock text-primary me-2"></i>Attendance & HR Dashboard</h3>
             <p class="text-muted small mb-0">Biometric Attendance, Shift Tracking, Leave & Payroll Summary for Today ({{ date('d M, Y') }})</p>
         </div>
         <div class="d-flex align-items-center gap-2">
-            <form action="{{ route('admin.attendance-suite.dashboard') }}" method="GET" class="d-flex gap-2">
+            <form action="{{ route('admin.attendance-suite.dashboard') }}" method="GET" class="d-flex flex-wrap gap-2">
                 <select name="branch_id" class="form-select form-select-sm" onchange="this.form.submit()">
                     <option value="">All Branches</option>
                     @foreach($branches as $b)
@@ -24,7 +24,7 @@
                 </select>
             </form>
             <a href="{{ route('admin.attendance-suite.attendance.index') }}" class="btn btn-primary btn-sm rounded-pill shadow-sm">
-                <i class="fa-solid fa-fingerprint me-1"></i> Live Attendance
+                <i class="fa-solid fa-fingerprint me-1"></i> <span class="d-none d-sm-inline">Live Attendance</span><span class="d-sm-none">Live</span>
             </a>
         </div>
     </div>

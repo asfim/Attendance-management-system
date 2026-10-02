@@ -3,17 +3,17 @@
 @section('content')
 <div class="container-fluid px-4 py-3">
     <!-- Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-start mb-4 gap-3 page-header-row">
         <div>
             <h3 class="fw-bold mb-1 text-dark"><i class="fa-solid fa-umbrella-beach text-primary me-2"></i>Leave Management Suite</h3>
             <p class="text-muted small mb-0">Leave Applications, Approval / Reject Workflow, Casual, Sick, Annual & Emergency Leave Quotas</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2">
             <button class="btn btn-primary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#applyLeaveModal">
-                <i class="fa-solid fa-plus me-1"></i> Submit Leave Application
+                <i class="fa-solid fa-plus me-1"></i> <span class="d-none d-sm-inline">Submit Leave Application</span><span class="d-sm-none">Apply</span>
             </button>
             <button class="btn btn-outline-primary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#addLeaveTypeModal">
-                <i class="fa-solid fa-tags me-1"></i> Add Leave Type
+                <i class="fa-solid fa-tags me-1"></i> <span class="d-none d-sm-inline">Add Leave Type</span><span class="d-sm-none">Type</span>
             </button>
         </div>
     </div>
@@ -49,9 +49,9 @@
                             <tr>
                                 <th>Applicant</th>
                                 <th>Leave Type</th>
-                                <th>Duration</th>
-                                <th>Total Days</th>
-                                <th>Reason</th>
+                                <th class="table-hide-xs">Duration</th>
+                                <th class="table-hide-xs">Total Days</th>
+                                <th class="table-hide-xs">Reason</th>
                                 <th>Status</th>
                                 <th class="text-end">Actions</th>
                             </tr>

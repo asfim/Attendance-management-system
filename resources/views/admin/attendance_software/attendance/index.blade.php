@@ -3,20 +3,20 @@
 @section('content')
 <div class="container-fluid px-4 py-3">
     <!-- Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-start mb-4 gap-3 page-header-row">
         <div>
             <h3 class="fw-bold mb-1 text-dark"><i class="fa-solid fa-clipboard-user text-primary me-2"></i>Attendance Management</h3>
             <p class="text-muted small mb-0">Check-in, Check-out, Present, Absent, Late, Early Leave, Half Day, Overtime & Manual Punching</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2">
             <a href="{{ route('admin.attendance-suite.attendance.missing-punches') }}" class="btn btn-outline-danger btn-sm rounded-pill">
-                <i class="fa-solid fa-triangle-exclamation me-1"></i> Missing Punches
+                <i class="fa-solid fa-triangle-exclamation me-1"></i> <span class="d-none d-sm-inline">Missing Punches</span><span class="d-sm-none">Missing</span>
             </a>
             <a href="{{ route('admin.attendance-suite.attendance.corrections') }}" class="btn btn-outline-warning btn-sm rounded-pill">
-                <i class="fa-solid fa-wrench me-1"></i> Attendance Corrections
+                <i class="fa-solid fa-wrench me-1"></i> <span class="d-none d-sm-inline">Corrections</span><span class="d-sm-none">Fix</span>
             </a>
             <a href="{{ route('admin.attendance-suite.attendance.history') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
-                <i class="fa-solid fa-history me-1"></i> Full History Log
+                <i class="fa-solid fa-history me-1"></i> <span class="d-none d-sm-inline">Full History Log</span><span class="d-sm-none">History</span>
             </a>
         </div>
     </div>
@@ -68,12 +68,12 @@
                 <thead class="table-light">
                     <tr>
                         <th>Employee</th>
-                        <th>Department</th>
+                        <th class="table-hide-xs">Department</th>
                         <th>Check-In</th>
                         <th>Check-Out</th>
                         <th>Status</th>
-                        <th>Late / Early</th>
-                        <th>Overtime</th>
+                        <th class="table-hide-xs">Late / Early</th>
+                        <th class="table-hide-xs">Overtime</th>
                         <th class="text-end">Manual Punch</th>
                     </tr>
                 </thead>

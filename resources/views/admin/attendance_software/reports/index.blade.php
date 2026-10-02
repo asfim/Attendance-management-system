@@ -3,17 +3,17 @@
 @section('content')
 <div class="container-fluid px-4 py-3">
     <!-- Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-start mb-4 gap-3 page-header-row">
         <div>
             <h3 class="fw-bold mb-1 text-dark"><i class="fa-solid fa-file-invoice text-primary me-2"></i>Attendance Reports & Exports</h3>
             <p class="text-muted small mb-0">Daily, Monthly, Department, Late, Absent, Overtime, Leave, Early Leave, Missing Punch & Salary Reports</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2">
             <a href="{{ request()->fullUrlWithQuery(['export' => 'csv']) }}" class="btn btn-outline-success btn-sm rounded-pill">
-                <i class="fa-solid fa-file-excel me-1"></i> Export Excel / CSV
+                <i class="fa-solid fa-file-excel me-1"></i> <span class="d-none d-sm-inline">Export Excel / CSV</span><span class="d-sm-none">CSV</span>
             </a>
             <a href="{{ request()->fullUrlWithQuery(['export' => 'pdf']) }}" class="btn btn-primary btn-sm rounded-pill">
-                <i class="fa-solid fa-file-pdf me-1"></i> Export PDF
+                <i class="fa-solid fa-file-pdf me-1"></i> PDF
             </a>
         </div>
     </div>

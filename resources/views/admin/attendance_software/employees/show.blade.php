@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container-fluid px-4 py-3">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3 page-header-row">
         <div>
             <h3 class="fw-bold mb-1 text-dark"><i class="fa-solid fa-id-card text-primary me-2"></i>Employee Profile</h3>
             <p class="text-muted small mb-0">{{ $employee->user?->name }} ({{ $employee->employeeId() }})</p>

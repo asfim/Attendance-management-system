@@ -3,17 +3,17 @@
 @section('content')
 <div class="container-fluid px-4 py-3">
     <!-- Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-start mb-4 gap-3 page-header-row">
         <div>
             <h3 class="fw-bold mb-1 text-dark"><i class="fa-solid fa-clock text-primary me-2"></i>Shift & Timing Management</h3>
             <p class="text-muted small mb-0">General, Morning, Evening, Night, Flexible Shifts with Grace Time, Late Thresholds & Overtime rules</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2">
             <button class="btn btn-primary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#addShiftModal">
-                <i class="fa-solid fa-plus me-1"></i> Add New Shift
+                <i class="fa-solid fa-plus me-1"></i> Add Shift
             </button>
             <button class="btn btn-outline-secondary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#assignShiftModal">
-                <i class="fa-solid fa-user-gear me-1"></i> Assign Shift to Staff
+                <i class="fa-solid fa-user-gear me-1"></i> <span class="d-none d-md-inline">Assign Shift to Staff</span><span class="d-md-none">Assign</span>
             </button>
         </div>
     </div>

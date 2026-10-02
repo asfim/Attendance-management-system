@@ -2,13 +2,13 @@
 
 @section('content')
 <div class="container-fluid px-4 py-3">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3 page-header-row">
         <div>
             <h3 class="fw-bold mb-1 text-dark"><i class="fa-solid fa-triangle-exclamation text-danger me-2"></i>Missing Punch Records</h3>
             <p class="text-muted small mb-0">Staff who checked in but forgot to check out or have incomplete biometric punches</p>
         </div>
         <a href="{{ route('admin.attendance-suite.attendance.index') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
-            <i class="fa-solid fa-arrow-left me-1"></i> Back to Attendance Grid
+            <i class="fa-solid fa-arrow-left me-1"></i> Back
         </a>
     </div>
 
@@ -19,9 +19,9 @@
                     <tr>
                         <th>Date</th>
                         <th>Employee</th>
-                        <th>Department</th>
+                        <th class="table-hide-xs">Department</th>
                         <th>Check-In Time</th>
-                        <th>Check-Out Time</th>
+                        <th class="table-hide-xs">Check-Out Time</th>
                         <th>Status</th>
                         <th class="text-end">Resolve Action</th>
                     </tr>
