@@ -35,6 +35,7 @@ class Salary extends Model
         // Bonus/Extra
         'bonus',
         'overtime',
+        'is_manual_overtime',
         // Legacy (kept for backward compat)
         'deductions',
         'net_salary',

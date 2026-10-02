@@ -583,7 +583,9 @@ Route::middleware(['auth', 'log_activity'])->group(function () {
         Route::post('/branches/store-transfer', [\App\Http\Controllers\Admin\BranchDepartmentController::class, 'storeTransfer'])->name('transfers.store');
 
         Route::get('/payroll', [\App\Http\Controllers\Admin\AttendancePayrollController::class, 'index'])->name('payroll.index');
+        Route::post('/payroll/pay/{staffId}', [\App\Http\Controllers\Admin\AttendancePayrollController::class, 'paySalary'])->name('payroll.pay');
         Route::get('/payroll/slip/{staffId}', [\App\Http\Controllers\Admin\AttendancePayrollController::class, 'generatePayslip'])->name('payroll.slip');
+        Route::post('/payroll/overtime/{staffId}', [\App\Http\Controllers\Admin\AttendancePayrollController::class, 'updateOvertime'])->name('payroll.overtime');
 
         Route::get('/reports', [\App\Http\Controllers\Admin\AttendanceReportController::class, 'index'])->name('reports.index');
 
