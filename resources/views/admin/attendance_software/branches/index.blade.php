@@ -3,19 +3,19 @@
 @section('content')
 <div class="container-fluid px-4 py-3">
     <!-- Header -->
-    <div class="d-flex flex-wrap justify-content-between align-items-start mb-4 gap-3 page-header-row">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start mb-4 gap-3 page-header-row">
         <div>
             <h3 class="fw-bold mb-1 text-dark"><i class="fa-solid fa-code-branch text-primary me-2"></i>Branch & Department Management</h3>
             <p class="text-muted small mb-0">Multi-Branch support, Department hierarchy, Designations, & Employee Transfer logs</p>
         </div>
-        <div class="d-flex flex-wrap gap-2">
-            <button class="btn btn-primary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#addBranchModal">
+        <div class="d-flex flex-wrap gap-2 w-100" style="max-width: max-content;">
+            <button class="btn btn-primary btn-sm rounded-pill flex-grow-1 flex-md-grow-0" data-bs-toggle="modal" data-bs-target="#addBranchModal">
                 <i class="fa-solid fa-plus me-1"></i> Branch
             </button>
-            <button class="btn btn-outline-primary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#addDeptModal">
+            <button class="btn btn-outline-primary btn-sm rounded-pill flex-grow-1 flex-md-grow-0" data-bs-toggle="modal" data-bs-target="#addDeptModal">
                 <i class="fa-solid fa-plus me-1"></i> Dept
             </button>
-            <button class="btn btn-outline-secondary btn-sm rounded-pill" data-bs-toggle="modal" data-bs-target="#transferModal">
+            <button class="btn btn-outline-secondary btn-sm rounded-pill flex-grow-1 flex-md-grow-0" data-bs-toggle="modal" data-bs-target="#transferModal">
                 <i class="fa-solid fa-arrow-right-arrow-left me-1"></i> <span class="d-none d-sm-inline">Employee Transfer</span><span class="d-sm-none">Transfer</span>
             </button>
         </div>
@@ -29,18 +29,18 @@
     @endif
 
     <!-- Tabs Navigation -->
-    <ul class="nav nav-pills mb-4 gap-2" id="branchTab" role="tablist">
-        <li class="nav-item">
-            <button class="nav-link active rounded-pill fw-semibold" id="branches-tab" data-bs-toggle="pill" data-bs-target="#branches" type="button"><i class="fa-solid fa-building me-1"></i> Branches ({{ $branches->count() }})</button>
+    <ul class="nav nav-pills mb-4 gap-2 flex-column flex-sm-row" id="branchTab" role="tablist">
+        <li class="nav-item flex-sm-fill text-center">
+            <button class="nav-link active rounded-pill fw-semibold w-100" id="branches-tab" data-bs-toggle="pill" data-bs-target="#branches" type="button"><i class="fa-solid fa-building me-1"></i> Branches ({{ $branches->count() }})</button>
         </li>
-        <li class="nav-item">
-            <button class="nav-link rounded-pill fw-semibold" id="departments-tab" data-bs-toggle="pill" data-bs-target="#departments" type="button"><i class="fa-solid fa-sitemap me-1"></i> Departments ({{ $departments->count() }})</button>
+        <li class="nav-item flex-sm-fill text-center">
+            <button class="nav-link rounded-pill fw-semibold w-100" id="departments-tab" data-bs-toggle="pill" data-bs-target="#departments" type="button"><i class="fa-solid fa-sitemap me-1"></i> Departments ({{ $departments->count() }})</button>
         </li>
-        <li class="nav-item">
-            <button class="nav-link rounded-pill fw-semibold" id="designations-tab" data-bs-toggle="pill" data-bs-target="#designations" type="button"><i class="fa-solid fa-id-badge me-1"></i> Designations ({{ $designations->count() }})</button>
+        <li class="nav-item flex-sm-fill text-center">
+            <button class="nav-link rounded-pill fw-semibold w-100" id="designations-tab" data-bs-toggle="pill" data-bs-target="#designations" type="button"><i class="fa-solid fa-id-badge me-1"></i> Designations ({{ $designations->count() }})</button>
         </li>
-        <li class="nav-item">
-            <button class="nav-link rounded-pill fw-semibold" id="transfers-tab" data-bs-toggle="pill" data-bs-target="#transfers" type="button"><i class="fa-solid fa-arrow-right-arrow-left me-1"></i> Employee Transfers</button>
+        <li class="nav-item flex-sm-fill text-center">
+            <button class="nav-link rounded-pill fw-semibold w-100" id="transfers-tab" data-bs-toggle="pill" data-bs-target="#transfers" type="button"><i class="fa-solid fa-arrow-right-arrow-left me-1"></i> Employee Transfers</button>
         </li>
     </ul>
 

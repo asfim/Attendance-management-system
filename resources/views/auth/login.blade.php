@@ -1,65 +1,74 @@
 @extends('layouts.auth')
 
 @section('content')
-<h5 class="text-center text-white mb-4" style="font-weight: 500;">Sign in to your account</h5>
+<div class="mb-5">
+    <h3 class="text-white mb-2" style="font-weight: 700; font-size: 2rem;">Welcome Back</h3>
+    <p class="text-secondary" style="font-size: 1rem;">Enter your credentials to access your dashboard.</p>
+</div>
 
 @if(session('status'))
-    <div class="alert alert-success border-0 text-white bg-success bg-opacity-25" role="alert" style="border-radius: 12px;">
-        <i class="fa-solid fa-circle-check me-2"></i>{{ session('status') }}
+    <div class="alert border-0 text-white bg-success bg-opacity-25 d-flex align-items-center mb-4" role="alert" style="border-radius: 12px; border-left: 4px solid #10b981 !important;">
+        <i class="fa-solid fa-circle-check fs-5 me-3 text-success"></i>
+        <div>{{ session('status') }}</div>
     </div>
 @endif
 
 @if(session('info'))
-    <div class="alert alert-info border-0 text-white bg-info bg-opacity-25" role="alert" style="border-radius: 12px;">
-        <i class="fa-solid fa-circle-info me-2"></i>{{ session('info') }}
+    <div class="alert border-0 text-white bg-info bg-opacity-25 d-flex align-items-center mb-4" role="alert" style="border-radius: 12px; border-left: 4px solid #0ea5e9 !important;">
+        <i class="fa-solid fa-circle-info fs-5 me-3 text-info"></i>
+        <div>{{ session('info') }}</div>
     </div>
 @endif
 
 @if($errors->any())
-    <div class="alert alert-danger border-0 text-white bg-danger bg-opacity-25" role="alert" style="border-radius: 12px;">
-        <i class="fa-solid fa-triangle-exclamation me-2"></i>{{ $errors->first() }}
+    <div class="alert border-0 text-white bg-danger bg-opacity-25 d-flex align-items-center mb-4" role="alert" style="border-radius: 12px; border-left: 4px solid #ef4444 !important;">
+        <i class="fa-solid fa-triangle-exclamation fs-5 me-3 text-danger"></i>
+        <div>{{ $errors->first() }}</div>
     </div>
 @endif
 
 <form action="{{ route('login') }}" method="POST">
     @csrf
     
-    <div class="mb-3">
-        <label for="email" class="form-label text-light fs-6">Email Address</label>
+    <div class="mb-4 position-relative">
+        <label for="email" class="form-label text-light fs-6 fw-semibold mb-2">Email</label>
         <div class="input-group">
-            <span class="input-group-text bg-transparent border-0 text-secondary" style="margin-right: -40px; z-index: 5;"><i class="fa-solid fa-envelope"></i></span>
-            <input type="email" name="email" id="email" class="form-control form-control-custom ps-5" placeholder="name@school.com" value="{{ old('email') }}" required autofocus>
+            <span class="input-group-text bg-transparent border-0 text-secondary position-absolute" style="left: 0; z-index: 5; height: 100%; display: flex; align-items: center; padding-left: 18px;"><i class="fa-solid fa-envelope"></i></span>
+            <input type="email" name="email" id="email" class="form-control form-control-custom" style="padding-left: 45px;" placeholder="name@company.com" value="{{ old('email') }}" required autofocus>
         </div>
     </div>
     
-    <div class="mb-4">
-        <div class="d-flex justify-content-between mb-2">
-            <label for="password" class="form-label text-light fs-6 m-0">Password</label>
-            <a href="{{ route('password.request') }}" class="text-decoration-none text-primary fs-7" style="color: #818cf8 !important;">Forgot password?</a>
+    <div class="mb-5 position-relative">
+        <div class="d-flex justify-content-between mb-2 align-items-center">
+            <label for="password" class="form-label text-light fs-6 fw-semibold m-0">Password</label>
+            <a href="{{ route('password.request') }}" class="text-decoration-none" style="color: #38bdf8; font-size: 0.9rem; transition: color 0.3s;" onmouseover="this.style.color='#7dd3fc'" onmouseout="this.style.color='#38bdf8'">Forgot password?</a>
         </div>
         <div class="input-group">
-            <span class="input-group-text bg-transparent border-0 text-secondary" style="margin-right: -40px; z-index: 5;"><i class="fa-solid fa-lock"></i></span>
-            <input type="password" name="password" id="password" class="form-control form-control-custom ps-5 pe-5" placeholder="••••••••" required>
-            <button class="btn text-secondary border-0" type="button" style="margin-left: -45px; z-index: 5; padding-right: 15px;" onclick="togglePassword()">
+            <span class="input-group-text bg-transparent border-0 text-secondary position-absolute" style="left: 0; z-index: 5; height: 100%; display: flex; align-items: center; padding-left: 18px;"><i class="fa-solid fa-lock"></i></span>
+            <input type="password" name="password" id="password" class="form-control form-control-custom pe-5" style="padding-left: 45px;" placeholder="••••••••" required>
+            <button class="btn text-secondary border-0 position-absolute" type="button" style="right: 0; z-index: 5; height: 100%; display: flex; align-items: center; padding-right: 18px;" onclick="togglePassword()">
                 <i class="fa-regular fa-eye" id="togglePasswordIcon"></i>
             </button>
         </div>
     </div>
 
-    <button type="submit" class="btn btn-custom w-100 mb-3"><i class="fa-solid fa-right-to-bracket me-2"></i>Login</button>
+    <button type="submit" class="btn btn-custom w-100 mb-4 d-flex justify-content-center align-items-center gap-2">
+        <span>Sign In</span>
+        <i class="fa-solid fa-arrow-right"></i>
+    </button>
     
-    <div class="text-center">
-        <span class="text-secondary fs-7">First time using EduERP? </span>
-        <a href="{{ route('install.wizard') }}" class="text-decoration-none text-primary fs-7" style="color: #818cf8 !important;">Run installation</a>
+    <div class="text-center mb-4">
+        <span class="text-secondary" style="font-size: 0.95rem;">New to Attendify? </span>
+        <a href="{{ route('install.wizard') }}" class="text-decoration-none fw-semibold" style="color: #818cf8; font-size: 0.95rem; transition: color 0.3s;" onmouseover="this.style.color='#a5b4fc'" onmouseout="this.style.color='#818cf8'">Run setup</a>
     </div>
 </form>
 
-<div class="mt-4 pt-3 border-top border-light border-opacity-10 text-center">
-    <span class="text-secondary fs-7 d-block mb-2">Demo Quick-Fill:</span>
+<div class="mt-4 pt-4 border-top text-center" style="border-color: rgba(255,255,255,0.05) !important;">
+    <span class="text-secondary d-block mb-3" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;">Demo Access</span>
     <div class="d-flex flex-wrap justify-content-center gap-2">
-        <button type="button" class="btn btn-sm btn-outline-light text-secondary border-light border-opacity-20 fs-7" onclick="quickFill('admin@school.com', 'admin123')">Admin</button>
-        <button type="button" class="btn btn-sm btn-outline-light text-secondary border-light border-opacity-20 fs-7" onclick="quickFill('teacher@school.com', 'teacher123')">Teacher</button>
-        <button type="button" class="btn btn-sm btn-outline-light text-secondary border-light border-opacity-20 fs-7" onclick="quickFill('student@school.com', 'student123')">Student</button>
+        <button type="button" class="btn btn-sm text-light fw-medium" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'" onclick="quickFill('admin@school.com', 'admin123')">Admin</button>
+        <button type="button" class="btn btn-sm text-light fw-medium" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'" onclick="quickFill('teacher@school.com', 'teacher123')">Teacher</button>
+        <button type="button" class="btn btn-sm text-light fw-medium" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'" onclick="quickFill('student@school.com', 'student123')">Student</button>
     </div>
 </div>
 
