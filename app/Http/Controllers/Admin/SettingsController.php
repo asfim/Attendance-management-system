@@ -29,11 +29,21 @@ class SettingsController extends Controller
             $data['site_favicon'] = '/storage/' . $path;
         }
 
+        if ($request->filled('company_name')) {
+            $data['school_name'] = $request->company_name;
+        }
+        if ($request->filled('company_reg_no')) {
+            $data['school_eiin'] = $request->company_reg_no;
+        }
+        if ($request->filled('company_location')) {
+            $data['school_address_short'] = $request->company_location;
+        }
+
         foreach ($data as $key => $val) {
             Setting::set($key, $val);
         }
 
-        return back()->with('success', 'Global system settings saved successfully!');
+        return back()->with('success', 'Company & system settings saved successfully!');
     }
 
     public function paymentConfig()

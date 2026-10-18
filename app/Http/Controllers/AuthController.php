@@ -141,9 +141,9 @@ class AuthController extends Controller
 
     protected function redirectUserByRole(User $user)
     {
-        if ($user->hasRole(['super_admin', 'admin'])) {
+        if ($user->hasRole(['super_admin', 'admin', 'hr', 'manager'])) {
             return redirect()->route('admin.attendance-suite.dashboard');
-        } elseif ($user->hasRole(['teacher', 'hr', 'staff', 'accountant', 'receptionist', 'employee'])) {
+        } elseif ($user->hasRole(['employee', 'staff', 'accountant', 'receptionist'])) {
             return redirect()->route('employee.dashboard');
         }
 

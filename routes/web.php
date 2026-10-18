@@ -96,7 +96,7 @@ Route::middleware(['auth', 'log_activity'])->group(function () {
 
     // Admin Group
     Route::prefix('admin')->name('admin.')->middleware([\App\Http\Middleware\CheckAdminAccess::class])->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [\App\Http\Controllers\Admin\AttendanceSoftwareDashboardController::class, 'index'])->name('dashboard');
         Route::post('/clear-cache', [MaintenanceController::class, 'clearCache'])->name('clear.cache');
         
         // Shifts / Time Settings
@@ -138,7 +138,7 @@ Route::middleware(['auth', 'log_activity'])->group(function () {
         Route::get('/staff-attendance/payroll-sidebar/{staffId}', [StaffAttendanceController::class, 'payrollSidebar'])->name('staff-attendance.payroll-sidebar');
 
         // Global Holidays
-        Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays.index');
+        Route::get('/holidays', [\App\Http\Controllers\Admin\AttendanceHolidayController::class, 'index'])->name('holidays.index');
         Route::post('/holidays/toggle', [HolidayController::class, 'toggle'])->name('holidays.toggle');
         Route::post('/holidays/sync', [HolidayController::class, 'syncGoogle'])->name('holidays.sync');
 
@@ -477,69 +477,14 @@ Route::middleware(['auth', 'log_activity'])->group(function () {
         Route::get('/reports/fees/transport', [FeeReportController::class, 'transportFeeReport'])->name('reports.fees.transport');
     });
 
-    // Teacher Group
-    Route::prefix('teacher')->name('teacher.')->middleware('role:teacher')->group(function () {
-        Route::get('/dashboard', [TeacherController::class, 'dashboard'])->name('dashboard');
-        Route::get('/timetable', [TeacherController::class, 'timetable'])->name('timetable');
-        Route::get('/attendance', [TeacherController::class, 'attendance'])->name('attendance');
-        Route::post('/attendance', [TeacherController::class, 'storeAttendance'])->name('attendance.store');
-        Route::get('/marks', [TeacherController::class, 'marks'])->name('marks');
-        Route::post('/marks', [TeacherController::class, 'storeMarks'])->name('marks.store');
-        
-        // Homework & Study Materials
-        Route::resource('homework', \App\Http\Controllers\Teacher\HomeworkController::class);
-        Route::get('homework/{homework}/submissions', [\App\Http\Controllers\Teacher\HomeworkController::class, 'submissions'])->name('homework.submissions');
-        Route::post('homework/submissions/{submission}/evaluate', [\App\Http\Controllers\Teacher\HomeworkController::class, 'evaluate'])->name('homework.evaluate');
-        Route::resource('study-materials', \App\Http\Controllers\Teacher\StudyMaterialController::class);
-        
-        // Leaves
-        Route::resource('leaves', \App\Http\Controllers\Teacher\LeaveController::class)->only(['index', 'create', 'store']);
-        Route::resource('student-leaves', \App\Http\Controllers\Teacher\StudentLeaveController::class)->only(['index', 'update']);
-    });
-
-    // Staff Group (For teachers, accountants, librarians, hr, receptionist, generic staff)
-    Route::prefix('staff')->name('staff.')->middleware('role:teacher,accountant,librarian,hr,receptionist,staff')->group(function () {
+    // Staff Group (For accountants, hr, receptionist, generic staff)
+    Route::prefix('staff')->name('staff.')->middleware('role:accountant,hr,receptionist,staff')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Staff\StaffDashboardController::class, 'dashboard'])->name('dashboard');
         Route::get('/attendance', [\App\Http\Controllers\Staff\StaffDashboardController::class, 'attendance'])->name('attendance');
         Route::get('/salary', [\App\Http\Controllers\Staff\StaffDashboardController::class, 'salary'])->name('salary');
     });
 
-    // Student Group
-    Route::prefix('student')->name('student.')->middleware('role:student')->group(function () {
-        Route::get('/dashboard', [StudentStudentController::class, 'dashboard'])->name('dashboard');
-        Route::get('/routine', [StudentStudentController::class, 'routine'])->name('routine');
-        Route::get('/attendance', [StudentStudentController::class, 'attendance'])->name('attendance');
-        Route::get('/fees', [StudentStudentController::class, 'fees'])->name('fees');
-        Route::get('/fees/pay/{id}', [StudentStudentController::class, 'showPaymentScreen'])->name('fees.pay');
-        Route::post('/fees/pay/{id}', [StudentStudentController::class, 'processPayment'])->name('fees.pay.process');
-        Route::post('/fees/pay/{id}/success', [StudentStudentController::class, 'sslSuccess'])->name('fees.pay.success');
-        Route::post('/fees/pay/{id}/fail', [StudentStudentController::class, 'sslFail'])->name('fees.pay.fail');
-        Route::post('/fees/pay/{id}/cancel', [StudentStudentController::class, 'sslCancel'])->name('fees.pay.cancel');
-        Route::get('/results', [StudentStudentController::class, 'results'])->name('results');
-        Route::get('/transport', [StudentStudentController::class, 'transport'])->name('transport');
-        Route::get('/hostel', [StudentStudentController::class, 'hostel'])->name('hostel');
-        Route::get('/food', [StudentStudentController::class, 'food'])->name('food');
-        Route::get('/books', [StudentStudentController::class, 'books'])->name('books');
-        
-        // Homework & Study Materials
-        Route::get('/homework', [\App\Http\Controllers\Student\HomeworkController::class, 'index'])->name('homework.index');
-        Route::get('/homework/{homework}', [\App\Http\Controllers\Student\HomeworkController::class, 'show'])->name('homework.show');
-        Route::post('/homework/{homework}/submit', [\App\Http\Controllers\Student\HomeworkController::class, 'submit'])->name('homework.submit');
-        Route::get('/study-materials', [\App\Http\Controllers\Student\HomeworkController::class, 'materials'])->name('study-materials.index');
-        Route::get('/study-materials/{id}', [\App\Http\Controllers\Student\HomeworkController::class, 'showMaterial'])->name('study-materials.show');
-        
-        // Leaves
-        Route::resource('leaves', \App\Http\Controllers\Student\LeaveController::class)->only(['index', 'create', 'store']);
-    });
-
-    // Parent Group
-    Route::prefix('parent')->name('parent.')->middleware('role:parent')->group(function () {
-        Route::get('/dashboard', [ParentController::class, 'dashboard'])->name('dashboard');
-        Route::get('/child/{student_id}', [ParentController::class, 'childDetails'])->name('child.details');
-        
-        // Leaves
-        Route::resource('leaves', \App\Http\Controllers\Parent\LeaveController::class)->only(['index', 'create', 'store']);
-    });
+    // Note: Legacy school routes (Student, Teacher, Parent) disabled for Office Attendance Suite
 
     // Attendance Software Suite Routes (Admin)
     Route::prefix('admin/attendance-suite')->name('admin.attendance-suite.')->group(function () {

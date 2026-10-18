@@ -47,20 +47,16 @@ class InstallationWizardController extends Controller
             Artisan::call('migrate:fresh');
             
             // Seed base tables (Roles and Permissions)
-            // Let's create roles
+            // Create roles for Office Attendance Suite
             $roles = [
                 'super_admin' => 'Super Admin',
                 'admin' => 'Admin',
-                'principal' => 'Principal',
-                'vice_principal' => 'Vice Principal',
-                'teacher' => 'Teacher',
+                'hr' => 'HR Manager',
+                'manager' => 'Department Manager',
                 'accountant' => 'Accountant',
-                'librarian' => 'Librarian',
-                'receptionist' => 'Receptionist',
-                'hr' => 'HR',
                 'staff' => 'Staff',
-                'student' => 'Student',
-                'parent' => 'Parent'
+                'employee' => 'Employee',
+                'receptionist' => 'Receptionist',
             ];
 
             $roleModels = [];
@@ -71,24 +67,20 @@ class InstallationWizardController extends Controller
                 ]);
             }
 
-            // Create some sample permissions
+            // Create permissions for Office Attendance Suite
             $permissions = [
                 'view_dashboard' => 'View Dashboard',
-                'manage_users' => 'Manage Users',
-                'manage_academics' => 'Manage Academics',
-                'manage_students' => 'Manage Students',
-                'manage_teachers' => 'Manage Teachers',
-                'take_attendance' => 'Take Attendance',
-                'manage_fees' => 'Manage Fees',
-                'manage_accounts' => 'Manage Accounts',
-                'manage_payroll' => 'Manage Payroll',
-                'manage_library' => 'Manage Library',
-                'manage_hostel' => 'Manage Hostel',
-                'manage_transport' => 'Manage Transport',
-                'manage_inventory' => 'Manage Inventory',
-                'manage_notices' => 'Manage Notices',
-                'manage_certificates' => 'Manage Certificates',
-                'manage_settings' => 'Manage Settings'
+                'manage_employees' => 'Manage Employees',
+                'manage_attendance' => 'Manage Attendance',
+                'manage_shifts' => 'Manage Shifts',
+                'manage_leaves' => 'Manage Leaves',
+                'manage_holidays' => 'Manage Holidays',
+                'manage_branches' => 'Manage Branches & Departments',
+                'manage_payroll' => 'Manage Payroll & Salary',
+                'manage_biometrics' => 'Manage Biometric Devices',
+                'view_reports' => 'View Reports & Exports',
+                'manage_notifications' => 'Manage Notifications & SMS',
+                'manage_settings' => 'Manage System Settings',
             ];
 
             foreach ($permissions as $name => $displayName) {
@@ -110,6 +102,9 @@ class InstallationWizardController extends Controller
                 'password' => Hash::make($request->admin_password),
                 'status' => 'active',
             ]);
+
+            // Seed initial office structure (branches, departments, shifts, holidays)
+            Artisan::call('db:seed', ['--class' => 'AttendanceSoftwareSeeder']);
 
             return response()->json([
                 'success' => true,

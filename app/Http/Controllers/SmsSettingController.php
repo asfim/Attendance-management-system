@@ -46,36 +46,36 @@ class SmsSettingController extends Controller
     {
         $query = $request->get('q');
         
-        $students = \App\Models\StudentProfile::with(['user', 'parent', 'schoolClass', 'section'])
-            ->whereHas('user', function ($q) use ($query) {
-                $q->where('name', 'like', "%{$query}%");
+        $staffMembers = \App\Models\StaffProfile::with(['user', 'departmentRel', 'designationRel'])
+            ->where(function ($q) use ($query) {
+                $q->whereHas('user', function ($sub) use ($query) {
+                    $sub->where('name', 'like', "%{$query}%");
+                })
+                ->orWhere('phone', 'like', "%{$query}%")
+                ->orWhere('biometric_id', 'like', "%{$query}%");
             })
-            ->orWhere('roll_no', 'like', "%{$query}%")
-            ->orWhereHas('parent', function ($q) use ($query) {
-                $q->where('phone', 'like', "%{$query}%");
-            })
-            ->limit(10)
+            ->limit(20)
             ->get();
 
         $results = [];
-        foreach ($students as $student) {
-            $parentPhone = $student->parent ? $student->parent->phone : '';
-            $className = $student->schoolClass ? $student->schoolClass->name : '';
-            $sectionName = $student->section ? $student->section->name : '';
+        foreach ($staffMembers as $staff) {
+            $phone = $staff->phone ?? '';
+            $dept = $staff->departmentRel->name ?? $staff->department ?? 'General';
+            $desig = $staff->designationRel->title ?? $staff->designation ?? 'Staff';
+            $name = $staff->user->name ?? 'Employee';
+            $bioId = $staff->biometric_id ? " [ID: {$staff->biometric_id}]" : '';
             
-            $text = "{$student->user->name} (Roll: {$student->roll_no})";
-            if ($className) $text .= " - {$className}";
-            if ($sectionName) $text .= "({$sectionName})";
-            if ($parentPhone) $text .= " | Guardian: {$parentPhone}";
-            
-            $imageUrl = $student->photoUrl();
+            $text = "{$name}{$bioId} - {$desig} ({$dept})";
+            if ($phone) {
+                $text .= " | {$phone}";
+            }
 
-            if ($parentPhone) {
+            if ($phone) {
                 $results[] = [
-                    'id' => $student->id, // Use student ID to allow selecting siblings uniquely
+                    'id' => $phone,
                     'text' => $text,
-                    'phone' => $parentPhone,
-                    'image' => $imageUrl
+                    'phone' => $phone,
+                    'image' => null
                 ];
             }
         }
@@ -95,14 +95,12 @@ class SmsSettingController extends Controller
         
         $resolvedPhones = [];
         foreach ($request->phones as $input) {
-            // If the input is a small number, it's likely a student ID
             if (is_numeric($input) && strlen($input) < 10) {
-                $student = \App\Models\StudentProfile::with('parent')->find($input);
-                if ($student && $student->parent && $student->parent->phone) {
-                    $resolvedPhones[] = $student->parent->phone;
+                $staff = \App\Models\StaffProfile::find($input);
+                if ($staff && $staff->phone) {
+                    $resolvedPhones[] = $staff->phone;
                 }
             } else {
-                // Otherwise it's a manually entered phone number
                 $resolvedPhones[] = $input;
             }
         }

@@ -4,7 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Attendance & HR Suite' }}</title>
+    <title>{{ $title ?? 'Attendify - Office Attendance & HR Suite' }}</title>
+
+    <!-- Dynamic Favicon -->
+    @php
+        $siteFavicon = \App\Models\Setting::companyFavicon();
+    @endphp
+    @if($siteFavicon)
+        <link rel="icon" href="{{ asset(ltrim($siteFavicon, '/')) }}">
+        <link rel="apple-touch-icon" href="{{ asset(ltrim($siteFavicon, '/')) }}">
+    @endif
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -939,7 +948,7 @@
             </div>
 
             <!-- Employee Portal Menu -->
-            @if (auth()->user()->hasRole(['employee', 'staff', 'teacher', 'hr', 'accountant', 'receptionist']))
+            @if (auth()->user()->hasRole(['employee', 'staff', 'hr', 'accountant', 'manager', 'receptionist']))
                 <div class="px-3 mb-2 text-muted"
                     style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">
                     My Portal
@@ -1020,7 +1029,7 @@
 
                 @if (auth()->user()->hasRole(['super_admin', 'admin']))
                     <!-- Holidays (hidden on small mobile) -->
-                    <a href="{{ route('admin.holidays.index') }}" class="btn btn-light rounded-circle me-2 navbar-icon-optional"
+                    <a href="{{ route('admin.attendance-suite.holidays.index') }}" class="btn btn-light rounded-circle me-2 navbar-icon-optional"
                         title="Holidays">
                         <i class="fa-solid fa-umbrella-beach text-secondary"></i>
                     </a>

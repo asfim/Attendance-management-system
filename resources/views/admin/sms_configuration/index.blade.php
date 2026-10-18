@@ -7,7 +7,7 @@
     <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-3">
         <div>
             <h3 class="fw-bold mb-1"><i class="bi bi-chat-dots text-primary me-2"></i>Dynamic SMS Gateway</h3>
-            <p class="text-muted mb-0">Configure your SMS API provider to send automated biometric punch alerts to guardians.</p>
+            <p class="text-muted mb-0">Configure your SMS API provider to send automated biometric punch alerts to employees and managers.</p>
         </div>
     </div>
 
@@ -74,13 +74,13 @@
                 <div class="row g-4">
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Check-In / Entry Message</label>
-                        <textarea class="form-control" name="entry_message_template" rows="4" placeholder="Dear Guardian, [name] has entered the school at [time] on [date].">{{ old('entry_message_template', $setting->entry_message_template ?? 'Dear Guardian, your child [name] has safely entered the school premises at [time] on [date]. Thank you.') }}</textarea>
+                        <textarea class="form-control" name="entry_message_template" rows="4" placeholder="Hello [name], your check-in punch has been recorded at [time] on [date].">{{ old('entry_message_template', $setting->entry_message_template ?? 'Hello [name], your entry punch has been recorded at [time] on [date]. Have a productive day at work!') }}</textarea>
                         <div class="form-text">Available Tags: <code>[name]</code>, <code>[time]</code>, <code>[date]</code></div>
                     </div>
                     
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Check-Out / Exit Message</label>
-                        <textarea class="form-control" name="exit_message_template" rows="4" placeholder="Dear Guardian, [name] has left the school at [time] on [date].">{{ old('exit_message_template', $setting->exit_message_template ?? 'Dear Guardian, your child [name] has left the school premises at [time] on [date]. Thank you.') }}</textarea>
+                        <textarea class="form-control" name="exit_message_template" rows="4" placeholder="Hello [name], your check-out punch has been recorded at [time] on [date].">{{ old('exit_message_template', $setting->exit_message_template ?? 'Hello [name], your exit punch has been recorded at [time] on [date]. Have a safe journey home!') }}</textarea>
                         <div class="form-text">Available Tags: <code>[name]</code>, <code>[time]</code>, <code>[date]</code></div>
                     </div>
                 </div>

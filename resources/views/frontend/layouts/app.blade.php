@@ -6,8 +6,12 @@
 
     <title>{{ \App\Models\Setting::get('site_meta_title', 'Sunrise Model School & College') }}</title>
 
-    @if(\App\Models\Setting::get('site_favicon'))
-    <link rel="icon" type="image/x-icon" href="{{ \App\Models\Setting::get('site_favicon') }}">
+    @php
+        $siteFavicon = \App\Models\Setting::companyFavicon();
+    @endphp
+    @if($siteFavicon)
+        <link rel="icon" href="{{ asset(ltrim($siteFavicon, '/')) }}">
+        <link rel="apple-touch-icon" href="{{ asset(ltrim($siteFavicon, '/')) }}">
     @endif
 
     <!-- Tailwind & JS via Vite (Required for other pages) -->

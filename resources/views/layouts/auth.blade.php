@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Login - Attendify' }}</title>
+    <title>{{ $title ?? 'Login - Attendify Office Suite' }}</title>
+    
+    <!-- Dynamic Favicon -->
+    @php
+        $siteFavicon = \App\Models\Setting::companyFavicon();
+    @endphp
+    @if($siteFavicon)
+        <link rel="icon" href="{{ asset(ltrim($siteFavicon, '/')) }}">
+        <link rel="apple-touch-icon" href="{{ asset(ltrim($siteFavicon, '/')) }}">
+    @endif
     
     <!-- Google Fonts: Outfit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -267,8 +276,8 @@
                 <div class="main-icon-container">
                     <i class="fa-solid fa-fingerprint"></i>
                 </div>
-                <h1>Next-Gen<br>Attendance.</h1>
-                <p>Manage your workforce effortlessly with our smart, real-time tracking platform.</p>
+                <h1>Next-Gen<br>Office Attendance.</h1>
+                <p>Manage your workforce, biometric punches, shifts, leaves & payroll effortlessly.</p>
             </div>
         </div>
 

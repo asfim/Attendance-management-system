@@ -239,7 +239,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Location / Branch Name</label>
-                        <input type="text" name="location" class="form-control" placeholder="e.g. Branch 1 - Academic Building">
+                        <input type="text" name="location" class="form-control" placeholder="e.g. Head Office - Main Reception">
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Device Serial Number (Optional)</label>

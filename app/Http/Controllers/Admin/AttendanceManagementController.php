@@ -11,6 +11,8 @@ use App\Models\Department;
 use App\Models\AttendanceNotification;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Setting;
 
 class AttendanceManagementController extends Controller
 {
@@ -200,12 +202,13 @@ class AttendanceManagementController extends Controller
         return redirect()->back()->with('success', 'Attendance correction applied successfully!');
     }
 
-    // Full Attendance History Log
+    // Full Attendance History Log & Export
     public function history(Request $request)
     {
-        $month = $request->input('month', now()->month);
-        $year  = $request->input('year', now()->year);
+        $month = (int) $request->input('month', now()->month);
+        $year  = (int) $request->input('year', now()->year);
         $staffId = $request->input('staff_id');
+        $export = $request->input('export'); // 'csv' or 'pdf'
 
         $staffMembers = StaffProfile::with(['user', 'branch', 'departmentRel'])->where('status', 'active')->get();
 
@@ -227,8 +230,235 @@ class AttendanceManagementController extends Controller
             $query->where('attendable_id', $staffId);
         }
 
+        // Export handling
+        if ($export === 'csv') {
+            $records = $query->orderBy('attendance_date', 'asc')->get();
+            return $this->exportHistoryCsv($records, $month, $year, $staffId);
+        }
+
+        if ($export === 'pdf') {
+            $records = $query->orderBy('attendance_date', 'asc')->get();
+            return $this->exportHistoryPdf($records, $month, $year, $staffId);
+        }
+
         $historyLogs = $query->orderBy('attendance_date', 'desc')->paginate(30);
 
-        return view('admin.attendance_software.attendance.history', compact('historyLogs', 'staffMembers', 'month', 'year', 'staffId'));
+        // Calculate individual summary if an employee is selected
+        $selectedStaff = $staffId ? StaffProfile::with(['user', 'branch', 'departmentRel', 'designationRel', 'shifts'])->find($staffId) : null;
+        $staffMonthlySummary = null;
+        if ($selectedStaff) {
+            $allStaffLogs = Attendance::where('attendable_type', StaffProfile::class)
+                ->where('attendable_id', $staffId)
+                ->whereMonth('attendance_date', $month)
+                ->whereYear('attendance_date', $year)
+                ->get();
+
+            $staffMonthlySummary = [
+                'total_days'        => $allStaffLogs->count(),
+                'present'           => $allStaffLogs->whereIn('status', ['present', 'work_from_home'])->count(),
+                'late'              => $allStaffLogs->where('status', 'late')->count(),
+                'early_leave'       => $allStaffLogs->where('status', 'early_leave')->count(),
+                'absent'            => $allStaffLogs->where('status', 'absent')->count(),
+                'leave'             => $allStaffLogs->where('status', 'leave')->count(),
+                'half_day'          => $allStaffLogs->where('status', 'half_day')->count(),
+                'holiday'           => $allStaffLogs->where('status', 'holiday')->count(),
+                'total_overtime_min'=> $allStaffLogs->sum('overtime_minutes'),
+                'total_working_hrs' => round($allStaffLogs->sum('working_hours'), 1),
+            ];
+        }
+
+        $companyName    = Setting::companyName();
+        $companyAddress = Setting::companyAddress();
+        $companyRegNo   = Setting::companyRegNo();
+        $companyLogo    = Setting::companyLogo();
+
+        return view('admin.attendance_software.attendance.history', compact(
+            'historyLogs',
+            'staffMembers',
+            'month',
+            'year',
+            'staffId',
+            'selectedStaff',
+            'staffMonthlySummary',
+            'companyName',
+            'companyAddress',
+            'companyRegNo',
+            'companyLogo'
+        ));
+    }
+
+    /**
+     * Export attendance history as CSV (All or Individual Employee).
+     */
+    private function exportHistoryCsv($records, int $month, int $year, $staffId = null)
+    {
+        $monthName = date('F', mktime(0, 0, 0, $month, 1));
+        $selectedStaff = $staffId ? StaffProfile::with(['user', 'branch', 'departmentRel', 'designationRel'])->find($staffId) : null;
+        $companyName   = Setting::companyName();
+        $companyAddress = Setting::companyAddress();
+
+        if ($selectedStaff) {
+            $cleanName = \Illuminate\Support\Str::slug($selectedStaff->user?->name ?? 'employee', '_');
+            $fileName = "attendance_history_{$cleanName}_{$monthName}_{$year}.csv";
+        } else {
+            $fileName = "attendance_history_all_{$monthName}_{$year}.csv";
+        }
+
+        $headers = [
+            "Content-type"        => "text/csv; charset=UTF-8",
+            "Content-Disposition" => "attachment; filename=\"{$fileName}\"",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $callback = function() use ($records, $monthName, $year, $selectedStaff, $companyName, $companyAddress) {
+            $file = fopen('php://output', 'w');
+            // Write UTF-8 BOM so Excel opens it with proper encoding
+            fputs($file, "\xEF\xBB\xBF");
+
+            if ($selectedStaff) {
+                // Individual Employee Header Details
+                fputcsv($file, [$companyName]);
+                if (!empty($companyAddress)) {
+                    fputcsv($file, [$companyAddress]);
+                }
+                fputcsv($file, ['EMPLOYEE MONTHLY ATTENDANCE STATEMENT']);
+                fputcsv($file, ['Employee Name:', $selectedStaff->user?->name ?? 'N/A', 'Employee ID:', $selectedStaff->employeeId(), 'Biometric ID:', $selectedStaff->biometric_id ?? 'N/A']);
+                fputcsv($file, ['Department:', $selectedStaff->departmentName, 'Branch:', $selectedStaff->branchName, 'Designation:', $selectedStaff->designationTitle]);
+                fputcsv($file, ['Month & Year:', "{$monthName} {$year}", 'Total Records:', $records->count()]);
+                
+                $presentCount = $records->whereIn('status', ['present', 'work_from_home'])->count();
+                $lateCount    = $records->where('status', 'late')->count();
+                $absentCount  = $records->where('status', 'absent')->count();
+                $earlyCount   = $records->where('status', 'early_leave')->count();
+                $leaveCount   = $records->where('status', 'leave')->count();
+                $totOtHrs     = round($records->sum('overtime_minutes') / 60, 1);
+                $totWorkHrs   = round($records->sum('working_hours'), 1);
+
+                fputcsv($file, [
+                    'Summary:',
+                    "Present: {$presentCount}",
+                    "Late: {$lateCount}",
+                    "Early Leave: {$earlyCount}",
+                    "Absent: {$absentCount}",
+                    "Leave: {$leaveCount}",
+                    "Overtime: {$totOtHrs} hrs",
+                    "Total Working Hours: {$totWorkHrs} hrs"
+                ]);
+                fputcsv($file, []); // Blank separator row
+
+                // Table Columns for Individual
+                fputcsv($file, ['Date', 'Day', 'Shift', 'Status', 'Check In', 'Check Out', 'Late (Mins)', 'Early Leave (Mins)', 'Overtime (Mins)', 'Working Hours', 'Remarks']);
+
+                foreach ($records as $row) {
+                    fputcsv($file, [
+                        $row->attendance_date?->format('Y-m-d'),
+                        $row->attendance_date?->format('l'),
+                        $row->shift?->name ?? 'General Shift',
+                        strtoupper($row->status),
+                        $row->entry_time ? date('h:i A', strtotime($row->entry_time)) : '--',
+                        $row->exit_time ? date('h:i A', strtotime($row->exit_time)) : '--',
+                        $row->late_minutes ?? 0,
+                        $row->early_leave_minutes ?? 0,
+                        $row->overtime_minutes ?? 0,
+                        $row->working_hours ?? 0,
+                        $row->remarks ?? '',
+                    ]);
+                }
+            } else {
+                // All Employees Header Details
+                fputcsv($file, [$companyName]);
+                if (!empty($companyAddress)) {
+                    fputcsv($file, [$companyAddress]);
+                }
+                fputcsv($file, ['ALL EMPLOYEES ATTENDANCE HISTORY LOG']);
+                fputcsv($file, ['Month & Year:', "{$monthName} {$year}", 'Total Records:', $records->count(), 'Exported At:', now()->toDateTimeString()]);
+                fputcsv($file, []); // Blank separator row
+
+                // Table Columns for All
+                fputcsv($file, ['Date', 'Day', 'Employee ID', 'Biometric ID', 'Employee Name', 'Branch', 'Department', 'Designation', 'Shift', 'Status', 'Check In', 'Check Out', 'Late (Mins)', 'Early Leave (Mins)', 'Overtime (Mins)', 'Working Hours']);
+
+                foreach ($records as $row) {
+                    $staff = $row->attendable;
+                    fputcsv($file, [
+                        $row->attendance_date?->format('Y-m-d'),
+                        $row->attendance_date?->format('l'),
+                        $staff?->employeeId(),
+                        $staff?->biometric_id ?? '--',
+                        $staff?->user?->name ?? 'N/A',
+                        $staff?->branchName ?? 'N/A',
+                        $staff?->departmentName ?? 'N/A',
+                        $staff?->designationTitle ?? 'N/A',
+                        $row->shift?->name ?? 'General Shift',
+                        strtoupper($row->status),
+                        $row->entry_time ? date('h:i A', strtotime($row->entry_time)) : '--',
+                        $row->exit_time ? date('h:i A', strtotime($row->exit_time)) : '--',
+                        $row->late_minutes ?? 0,
+                        $row->early_leave_minutes ?? 0,
+                        $row->overtime_minutes ?? 0,
+                        $row->working_hours ?? 0,
+                    ]);
+                }
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Export attendance history as PDF (All or Individual Employee).
+     */
+    private function exportHistoryPdf($records, int $month, int $year, $staffId = null)
+    {
+        $monthName = date('F', mktime(0, 0, 0, $month, 1));
+        $selectedStaff = $staffId ? StaffProfile::with(['user', 'branch', 'departmentRel', 'designationRel', 'shifts'])->find($staffId) : null;
+        $isIndividual = (bool) $selectedStaff;
+
+        $companyName    = Setting::companyName();
+        $companyAddress = Setting::companyAddress();
+        $companyRegNo   = Setting::companyRegNo();
+        $companyLogo    = Setting::companyLogo();
+
+        $staffMonthlySummary = null;
+        if ($selectedStaff) {
+            $staffMonthlySummary = [
+                'total_days'        => $records->count(),
+                'present'           => $records->whereIn('status', ['present', 'work_from_home'])->count(),
+                'late'              => $records->where('status', 'late')->count(),
+                'early_leave'       => $records->where('status', 'early_leave')->count(),
+                'absent'            => $records->where('status', 'absent')->count(),
+                'leave'             => $records->where('status', 'leave')->count(),
+                'half_day'          => $records->where('status', 'half_day')->count(),
+                'holiday'           => $records->where('status', 'holiday')->count(),
+                'total_overtime_min'=> $records->sum('overtime_minutes'),
+                'total_working_hrs' => round($records->sum('working_hours'), 1),
+            ];
+            $cleanName = \Illuminate\Support\Str::slug($selectedStaff->user?->name ?? 'employee', '_');
+            $fileName = "attendance_history_{$cleanName}_{$monthName}_{$year}.pdf";
+        } else {
+            $fileName = "attendance_history_all_{$monthName}_{$year}.pdf";
+        }
+
+        $pdf = Pdf::loadView('admin.attendance_software.attendance.history_pdf', compact(
+            'records',
+            'month',
+            'year',
+            'monthName',
+            'selectedStaff',
+            'isIndividual',
+            'staffMonthlySummary',
+            'companyName',
+            'companyAddress',
+            'companyRegNo',
+            'companyLogo'
+        ))
+        ->setPaper('a4', $isIndividual ? 'portrait' : 'landscape')
+        ->setOption('isRemoteEnabled', true)
+        ->setOption('isHtml5ParserEnabled', true);
+
+        return $pdf->download($fileName);
     }
 }

@@ -24,12 +24,11 @@
                 @csrf
                 
                 <div class="mb-4">
-                    <label class="form-label fw-semibold text-secondary">Search Guardian / Student</label>
+                    <label class="form-label fw-semibold text-secondary">Search Staff / Employee</label>
                     <select name="phones[]" id="studentSearch" class="form-select" multiple="multiple" required>
                     </select>
                     <div class="form-text mt-2 text-muted">
-                        <i class="fa-solid fa-info-circle me-1"></i> Type name, roll number, or phone to find the guardian's number. You can select multiple recipients. 
-                        If you want to send to a new number directly, you can also type it and press Enter.
+                        <i class="fa-solid fa-info-circle me-1"></i> Type staff name, department, phone number, or biometric ID. You can select multiple recipients or enter numbers directly.
                     </div>
                 </div>
 
@@ -152,7 +151,7 @@
         }
 
         $('#studentSearch').select2({
-            placeholder: 'Search by student name, roll, class or guardian phone...',
+            placeholder: 'Search by employee name, department, phone or biometric ID...',
             tags: true, 
             multiple: true,
             templateResult: formatResult,

@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Installation Wizard - EduERP</title>
+    <title>Installation Wizard - Attendify</title>
+    
+    <!-- Dynamic Favicon -->
+    @php
+        $siteFavicon = \App\Models\Setting::companyFavicon();
+    @endphp
+    @if($siteFavicon)
+        <link rel="icon" href="{{ asset(ltrim($siteFavicon, '/')) }}">
+        <link rel="apple-touch-icon" href="{{ asset(ltrim($siteFavicon, '/')) }}">
+    @endif
     
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -115,8 +124,8 @@
 <body>
 
     <div class="wizard-card text-center">
-        <h2 class="fw-bold mb-2"><i class="fa-solid fa-graduation-cap me-2 text-indigo-400"></i>EduERP Setup</h2>
-        <p class="text-secondary mb-4">Enterprise School Management ERP Installation Wizard</p>
+        <h2 class="fw-bold mb-2"><i class="fa-solid fa-clock me-2 text-indigo-400"></i>Attendify Setup</h2>
+        <p class="text-secondary mb-4">Enterprise Office Attendance & Workforce Management Setup</p>
         
         <!-- Step Indicators -->
         <div class="step-indicator">
