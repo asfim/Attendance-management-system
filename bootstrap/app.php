@@ -19,6 +19,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->validateCsrfTokens(except: [
+            'api/*',
+            'iclock/*',
             'student/fees/pay/*/success',
             'student/fees/pay/*/fail',
             'student/fees/pay/*/cancel',

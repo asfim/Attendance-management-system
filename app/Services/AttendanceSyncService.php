@@ -113,20 +113,29 @@ class AttendanceSyncService
                         continue;
                     }
 
-                    // Map to Student or Staff
-                    $profile = StudentProfile::where('biometric_id', $deviceUserId)
-                        ->orWhere('admission_no', $deviceUserId)
-                        ->orWhere('roll_no', $deviceUserId)
+                    // Map to Employee / Staff Profile
+                    $numId = (int) preg_replace('/[^0-9]/', '', $deviceUserId);
+                    $profile = StaffProfile::where('biometric_id', $deviceUserId)
+                        ->orWhere('fingerprint_id', $deviceUserId)
+                        ->orWhere('face_id', $deviceUserId)
+                        ->orWhere('phone', $deviceUserId)
+                        ->orWhere('national_id', $deviceUserId)
+                        ->when($numId > 0, function($q) use ($numId) {
+                            $q->orWhere('id', $numId);
+                        })
                         ->first();
-                    $userCategory = 'student';
-                    $attendableType = StudentProfile::class;
+                    $userCategory = 'staff';
+                    $attendableType = StaffProfile::class;
 
+                    // Fallback to StudentProfile only if exists
                     if (!$profile) {
-                        $profile = StaffProfile::where('biometric_id', $deviceUserId)
-                            ->orWhere('phone', $deviceUserId)
+                        $profile = StudentProfile::where('biometric_id', $deviceUserId)
+                            ->orWhere('admission_no', $deviceUserId)
                             ->first();
-                        $userCategory = 'staff';
-                        $attendableType = StaffProfile::class;
+                        if ($profile) {
+                            $userCategory = 'student';
+                            $attendableType = StudentProfile::class;
+                        }
                     }
 
                     if (!$profile) {

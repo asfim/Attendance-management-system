@@ -79,6 +79,12 @@ class AttendanceProcessingService
             }
         }
 
+        // Working hours calculation
+        $workingHours = 0;
+        if ($lastPunch) {
+            $workingHours = round($firstPunch->diffInMinutes($lastPunch) / 60, 2);
+        }
+
         $attendance = Attendance::updateOrCreate(
             [
                 'attendance_date' => $dateStr,
@@ -86,12 +92,17 @@ class AttendanceProcessingService
                 'attendable_id'   => $profile->id,
             ],
             [
+                'branch_id'            => $profile->branch_id ?? null,
+                'department_id'        => $profile->department_id ?? null,
+                'shift_id'             => $profile->shifts?->first()?->id ?? null,
                 'entry_time'           => $entryTimeStr,
                 'exit_time'            => $exitTimeStr,
                 'status'               => $status,
                 'late_minutes'         => $lateMinutes,
                 'early_leave_minutes'  => $earlyLeaveMinutes,
                 'overtime_minutes'     => $overtimeMinutes,
+                'working_hours'        => $workingHours,
+                'is_missing_punch'     => empty($exitTimeStr),
                 'remarks'              => "Biometric Auto-Processed. Entry: {$entryTimeStr}" . ($exitTimeStr ? " | Exit: {$exitTimeStr}" : ""),
             ]
         );
